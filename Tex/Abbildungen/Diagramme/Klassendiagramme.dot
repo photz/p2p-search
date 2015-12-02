@@ -1,0 +1,10 @@
+digraph G {
+graph [ rankdir=BT ]
+node [ shape=record ]
+Proxy [label=
+    "{Proxy|+get\l+send\l+error\l}"]
+
+Client [label=
+    "{Client|+connect\l+disconnect\l+findNewPeer\l+findURL\l+sendAnswer}"]
+Proxy->Client
+}
