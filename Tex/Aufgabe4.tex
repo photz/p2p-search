@@ -72,6 +72,12 @@
 \usepackage{tikz}
 \usepackage{color}
 
+%%% Operators min and max
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
 \begin{document}
 
  \begin{titlepage}
@@ -289,7 +295,31 @@ Bei einem Ring mit $2^{4}=16$ Positionen ergibt sich dann für A : $0 \equiv 16\
 A routet mit seinem längsten Finger zu B, B kann nur seinen zweitlängsten zu C verwenden, da der längste wieder bei A landet, wo auch C mit seinem zweitlängsten ankommt, weswegen C den drittlängsten zu D nimmt. D kontaktiert seinen Nachfolger E, in dessen Zuständigkeitsbereich der Schlüssel liegt.
 \section*{Aufgabe 19}
 
+Es gibt zwei Szenarien.  Im ersten Szenario f"uhrt Peer E \verb!check predecessors! aus, bevor C \verb!stabilize! ausf"uhrt, im zweiten Szenario ist es umgekehrt.
+
+\begin{enumerate}
+
+\item Nehmen wir an, dass Peer E die Funktion \verb!check predecessors! ausf"uhrt und feststellt, dass Peer D nicht antwortet.  
+\item Zu einem sp"ateren Zeitpunkt f"uhrt Peer D \verb!stabilize! aus.  
+\end{enumerate}
+
 \section*{Aufgabe 20}
+
+\begin{tabular}{ r | c }
+  Peer & Intervall \\
+  \hline
+  A & 0,2 \\
+  B & 0,2 \\
+  C & 0,15 \\
+  D & 0,1 \\
+  E & 0,15 \\
+  F & 0,2 \\
+\end{tabular}
+
+\begin{equation}
+  \rho = \frac{\argmax_i s_i}{\argmin_j s_j} = \frac{0,2}{0,1} = 2
+
+\end{equation}
 
 \section*{Aufgabe 21}
 \end{document}
