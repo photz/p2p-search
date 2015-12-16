@@ -1,0 +1,295 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{uniinput}	% direkte Eingabe der meisten Unicodezeichne
+\usepackage{floatflt}	% floating Umgebung für Abbildungen
+\usepackage[german]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{subscript} % \textsubscribt{} zum Tieferstellen außerhalb $ Modus
+\usepackage{hyperref}	% für links
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{paralist}	% für \compactitem: geringerer Zeilenabstand als in itemize Umgebung
+%\usepackage{parcolumns} 
+%\usepackage{ulem}	% für unterschiedliche Unterstreichungen
+%\usepackage{soul}	% Befehl ul zum Unterstreichen
+%\setuldepth{a} 	% setzt ul zum Unterstreichen auf die Unterlängen
+
+\usepackage[left=4cm,right=3cm,top=4cm,bottom=4cm]{geometry}
+
+\usepackage{lastpage}	% um letzte Seitenzahl in Erfahrung zu bringen
+\usepackage{multicol}
+
+\usepackage[figure]{hypcap}	% zum Verweis auf Abbildungen, muss nach href geladen werden
+
+\usepackage[format=hang, labelfont={bf,sf}, font={footnotesize}, labelsep=space]{caption}	% Format der Bildunterschrift center zum zentrieren
+% labelspace= space, colon, period (Separator zwischen Label und restlichem Textlabel, format=empty]{caption}	% Benennung Abbildungen ohne „Abbildung“
+\captionsetup[figure]{name=Abb.}
+
+% Kopfzeile
+\usepackage[T1]{fontenc}
+\usepackage[
+			%sfdefault
+			]{AlegreyaSans} %% Option 'black' gives heavier bold face
+%% The 'sfdefault' option to make the base font sans serif
+\renewcommand*\oldstylenums[1]{{\AlegreyaSansOsF #1}}
+
+\usepackage[headtopline,headsepline,automark]{scrpage2}
+\clearscrheadfoot
+\setheadtopline{2pt}
+\setheadsepline{.5pt}
+\renewcommand{\headfont}{\upshape \AlegreyaSansOsF}
+\ihead{Jan Berweiler 550\,212}
+\chead{Peer-to-peer }
+\ohead{ Übungsblatt 4 }
+\ifoot{}
+\cfoot{}
+\ofoot{Seite \pagemark/\pageref{LastPage}}
+\pagestyle{scrheadings}% Kopfzeile hier ein- oder ausschalten
+
+\hypersetup{
+	pdftitle={Peer-to-peer-Systeme: Übungsblatt 4},
+	pdfauthor={Jan Berweiler},
+	pdfsubject={Chord},
+	pdflang={de},
+	colorlinks=true, % 	surround links by color frames (false) or colors the text of the links (true).
+	%hidelinks 		hide links (removing color and border)
+	linkcolor 	=black, 	%color of internal links (sections, pages, etc.)
+	%linktoc 	=none 	%section,page,all 	defines which part of an entry in the toc is made into a link
+	citecolor 	=blue, 	%color of citation links (bibliography)
+	filecolor 	=cyan, 		%color of file links
+	urlcolor 	=blue,
+}
+
+\author{Jan Berweiler 550 212}
+\title{Peer-to-peer-Systeme: Übungsblatt 4
+}
+% Spezialpakete
+\usepackage{tikz}
+\usepackage{color}
+
+\begin{document}
+
+ \begin{titlepage}
+ \maketitle
+  Leider kann ich bei der morgigen Übung nicht anwesend sein, weswegen ich die Aufgaben schriftlich einreiche.
+ \end{titlepage}
+
+\section*{Aufgabe 15}
+a) \quad Das gesamte Quadrat gibt den CAN-Raum wieder, wobei die Zuständigkeitsbereiche der Peers durch einzelne Farben wiedergegeben werden. Der Peer \textit{Grün} verlässt das Overlay. Das entsprechende Nachbargebiet ist unter den Peers \textit{Blau} und \textit{Gelb} aufgeteilt, sodass es nicht direkt einem Nachbarn zugeschlagen werden kann. Die Defragmentierung ist jedoch einfach.\\
+\begin{figure}[h]\centering
+\begin{multicols}{3}
+\textit{\color{green}Grün} verlässt das Overlay.\\\columnbreak
+\textit{\color{blue}Blau} hat übernommen.\\\columnbreak
+Nach der Defragmentierung:
+\end{multicols}
+
+\begin{tikzpicture}
+
+\draw[line width=0pt, fill=green]	(2, 0) rectangle (4, 2);
+\draw[line width=0pt, fill=red]		(0, 0) rectangle (2, 4);
+\draw[line width=0pt, fill=blue]	(3, 2) rectangle (4, 4);
+\draw[line width=0pt, fill=yellow]	(2, 2) rectangle (3, 4);
+\draw[line width=1.5pt](0, 0) -- (4, 0) -- (4, 4) -- (0, 4) -- cycle;
+
+\draw[line width=0pt, fill=blue]	(7, 0) rectangle (9, 2);
+\draw[line width=0pt, fill=red]		(5, 0) rectangle (7, 4);
+\draw[line width=0pt, fill=blue]	(8, 2) rectangle (9, 4);
+\draw[line width=0pt, fill=yellow]	(7, 2) rectangle (8, 4);
+\draw[line width=1.5pt](5, 0) -- (9, 0) -- (9, 4) -- (5, 4) -- cycle;
+
+\draw[line width=0pt, fill=blue]	(12, 0) rectangle (14, 2);
+\draw[line width=0pt, fill=red]		(10, 0) rectangle (12, 4);
+%\draw[line width=0pt, fill=yellow]	(13, 2) rectangle (14, 4);
+\draw[line width=0pt, fill=yellow]	(12, 2) rectangle (14, 4);
+\draw[line width=1.5pt](10, 0) -- (14, 0) -- (14, 4) -- (10, 4) -- cycle;
+\end{tikzpicture}
+\caption{gibt die Aufteilung des CAN-Raumes vor dem Aussteigen des grünen Peers, nach dem Verlassen des Overlays mit Übernahme durch den blauen Peer sowie nach Defragmentierung.} \label{fig:1}
+\end{figure}
+
+b)\quad In der Baumdarstellung erkennt man, dass im Defragmentierungsschritt keine Tiefensuche notwendig ist:
+\begin{figure}[h!]\centering
+\begin{multicols}{3}
+\begin{tikzpicture}[level distance=14mm]
+  \node[rectangle,draw] {CAN-Raum}
+    child {node[circle,fill=red] {\color{red}Peer}
+    edge from parent node [left]{\textit{v}}}
+    child {node[rectangle,draw]  {Hälfte} 
+		child {node[rectangle,draw]  {Viertel} 
+			child {node[circle,fill=yellow] {\color{yellow}Peer} edge from parent node [left]{\textit{v}} }
+			child {node[circle,fill=blue] (blue){\color{blue}Peer} edge from parent node [right]{\textit{v}} }		edge from parent node [left]{\textit{h}}
+		}
+		child {node[circle,fill=green] (green){\color{green}Peer} edge from parent node [right]{\textit{h}}}
+		edge from parent node [right]{\textit{v}}
+	};
+		 \draw[dashed,->] (blue) -- (green);
+\end{tikzpicture}
+\begin{flushleft}
+\textit{\color{green}Grün} verlässt das Overlay.
+\end{flushleft} 
+\columnbreak
+\begin{tikzpicture}[level distance=14mm]
+  \node[rectangle,draw] {CAN-Raum}
+    child {node[circle,fill=red] {\color{red}Peer}
+    edge from parent node [left]{\textit{v}}}
+    child {node[rectangle,draw]  {Hälfte} 
+		child {node[rectangle,draw]  {Viertel} 
+			child {node[circle,fill=yellow] (yellow){\color{yellow}Peer} edge from parent node [left]{\textit{v}} }
+			child {node[circle,fill=blue] (blue){\color{blue}Peer} edge from parent node [right]{\textit{v}}  }		edge from parent node [left]{\textit{h}}
+		}
+		child {node[circle,fill=blue] {\color{blue}Peer} edge from parent node [right]{h}}
+		edge from parent node [right]{\textit{v}}
+	};
+	 \draw[dashed,->] (yellow) -- (blue);
+\end{tikzpicture}\\
+\begin{flushleft}
+ \mbox{\textit{\color{blue}Blau} hat übernommen.}
+ \end{flushleft}
+\columnbreak 
+\begin{tikzpicture}[level distance=14mm]
+  \node[rectangle,draw] {CAN-Raum}
+    child {node[circle,fill=red] {\color{red}Peer}
+    edge from parent node [left]{\textit{v}}}
+    child {node[rectangle,draw]  {Hälfte} 
+		child {node[circle,fill=yellow] {\color{yellow}Peer} edge from parent node [right]{\textit{h}}}
+		child {node[circle,fill=blue] {\color{blue}Peer} edge from parent node [right]{\textit{h}}}
+		edge from parent node [right]{\textit{v}}
+	};
+\end{tikzpicture}\\
+\begin{flushleft}
+Nach der Defragmentierung ist der Baum um eine Ebene kürzer.
+\end{flushleft}
+\end{multicols}
+\caption{gibt die Aufteilung des CAN-Raumes analog als Baumdiagramm dar. Die Blätter sind die farbigen Peers, die Knoten spiegeln den Aufteilungsgrad wieder. Die Kanten sind mit \textit{v} vertikal bzw. \textit{h} horizontal beschriftet, was der Aufteilung der CAN-Fläche aus Aufgabenteil a) entspricht.} \label{fig:2}
+\end{figure}
+
+\noindent c)\quad Liste der Aktionen und Nachrichten zur Überführung des Overlays in einen konsistenten Zustand nach Verlassen des Peers \textit{Grün}:
+\begin{compactitem}[–]
+\item \textit{Blau} übernimmt den Zuständigkeitsraum mit Schlüsseln von \textit{Grün}
+\item \textit{Blau} verbindet sich mit den ehemaligen Nachbarn von \textit{Grün} und teilt seinen neuen Nachbarn mit, welches seine Nachbarn sind.
+\item Bei einer periodischen Defragmentierung teilt \textit{Blau} mit, dass es für zwei Gebiete zuständig ist \textit{ODER} \textit{Blau} stößt aus diesem Grund eine Defragmentierung an.
+\item \textit{Blau} sucht einen benachbarten Peer, der sein kleinstes Gebiet übernehmen kann. Es ist keine Tiefensuche notwendig.
+\item Da \textit{Gelb} ein Nachbar mit selben Verzweigungsgrad ist, kann \textit{Gelb} den Bereich von \textit{Blau} mit den Schlüsseln übernehmen.
+\item Die beiden Teilgebiete von \textit{Gelb} werden fusioniert, da sie den gleichen Verzweigungsgrad haben.
+\item \textit{Gelb} verbindet sich mit den ehemaligen Nachbarn von Blau des übernommenen Gebietes und teilt ihnen mit, welches seine Nachbarn sind.
+\end{compactitem}
+
+\section*{Aufgabe 16}
+		a) \quad Wieder gibt das gesamte Quadrat den CAN-Raum wieder, wobei die Zuständigkeitsbereiche der Peers durch einzelne Farben wiedergegeben werden. Der Peer \textit{Rot} verlässt das Overlay. Der benachbarte Peer mit dem kleinesten Zuständigkeitsbereich – hier also \textit{Gelb} – übernimmt von Rot. Allerdings kann Gelb sein kleineres Gebiet nicht sofort mit an einen benachbarten Peer zum Verschmelzen abgeben, da das entsprechende Gebiet weiter aufgeteilt ist.\\
+\begin{figure}[h!]\centering
+\begin{multicols}{3}
+\textit{\color{red}Rot} verlässt das Overlay.\\\columnbreak
+\textit{\color{yellow}Gelb} hat übernommen.\\\columnbreak
+Nach der Defragmentierung:
+\end{multicols}
+
+\begin{tikzpicture}
+
+\draw[line width=0pt, fill=green]	(2, 0) rectangle (4, 2);
+\draw[line width=0pt, fill=red]		(0, 0) rectangle (2, 4);
+\draw[line width=0pt, fill=blue]	(3, 2) rectangle (4, 3);
+\draw[line width=0pt, fill=orange]	(3, 3) rectangle (4, 4);
+\draw[line width=0pt, fill=yellow]	(2, 2) rectangle (3, 4);
+\draw[line width=1.5pt](0, 0) -- (4, 0) -- (4, 4) -- (0, 4) -- cycle;
+
+\draw[line width=0pt, fill=green]	(7, 0) rectangle (9, 2);
+\draw[line width=0pt, fill=yellow]	(5, 0) rectangle (7, 4);
+\draw[line width=0pt, fill=blue]	(8, 2) rectangle (9, 3);
+\draw[line width=0pt, fill=orange]	(8, 3) rectangle (9, 4);
+\draw[line width=0pt, fill=yellow]	(7, 2) rectangle (8, 4);
+\draw[line width=1.5pt](5, 0) -- (9, 0) -- (9, 4) -- (5, 4) -- cycle;
+
+\draw[line width=0pt, fill=green]	(12, 0) rectangle (14, 2);
+\draw[line width=0pt, fill=yellow]		(10, 0) rectangle (12, 4);
+\draw[line width=0pt, fill=orange]	(13, 2) rectangle (14, 4);
+\draw[line width=0pt, fill=blue]	(12, 2) rectangle (13, 4);
+\draw[line width=1.5pt](10, 0) -- (14, 0) -- (14, 4) -- (10, 4) -- cycle;
+\end{tikzpicture}
+\caption{gibt die Aufteilung des CAN-Raumes vor dem Aussteigen des roten Peers, nach dem Verlassen des Overlays mit Übernahme durch den gelben Peer sowie nach Defragmentierung.} \label{fig:3}
+\end{figure}
+
+b)\quad In der Baumdarstellung erkennt man, dass jetzt im Defragmentierungsschritt eine Tiefensuche zum Finden von Partnern notwendig ist (s. Abbildung \ref{fig:4})
+\begin{figure}[h!]\centering
+\begin{multicols}{3}
+\begin{tikzpicture}[level distance=14mm]
+  \node[rectangle,draw] {CAN-Raum}
+    child {node[circle,fill=red] {\color{red}Peer}
+    edge from parent node [left]{\textit{v}}}
+    child {node[rectangle,draw]  {Hälfte} 
+		child {node[rectangle,draw]  {Viertel} 
+			child {node[rectangle, draw] {Achtel}  
+				child {node[circle,fill=orange] (orange){\color{orange}Peer} edge from parent node [left]{\textit{h}} }
+				child {node[circle,fill=blue] (blue){\color{blue}Peer} edge from parent node [right]{\textit{h}}} edge from parent node [left]{\textit{v}}
+				}
+			child {node[circle,fill=yellow] (yellow){\color{yellow}Peer} edge from parent node [right]{\textit{v}} }		edge from parent node [left]{\textit{h}}
+		}
+		child {node[circle,fill=green] {\color{green}Peer} edge from parent node [right]{\textit{h}}}
+		edge from parent node [right]{\textit{v}}
+	};
+		 %\draw[dashed,->] (blue) -- (green);
+\end{tikzpicture}
+\begin{flushleft}
+\textit{\color{red}Rot} verlässt das Overlay.
+\end{flushleft} 
+\columnbreak
+\begin{tikzpicture}[level distance=14mm]
+  \node[rectangle,draw] {CAN-Raum}
+    child {node[circle,fill=yellow] {\color{yellow}Peer}
+    edge from parent node [left]{\textit{v}}}
+    child {node[rectangle,draw]  {Hälfte} 
+		child {node[rectangle,draw]  {Viertel} 
+			child {node[rectangle, draw] {Achtel}  
+				child {node[circle,fill=orange] (orange){\color{orange}Peer} edge from parent node [left]{\textit{h}} }
+				child {node[circle,fill=blue] (blue){\color{blue}Peer} edge from parent node [right]{\textit{h}}} edge from parent node [left]{\textit{v}}
+				}
+			child {node[circle,fill=yellow] (yellow){\color{yellow}Peer} edge from parent node [right]{\textit{v}} }		edge from parent node [left]{\textit{h}}
+		}
+		child {node[circle,fill=green] {\color{green}Peer} edge from parent node [right]{\textit{h}}}
+		edge from parent node [right]{\textit{v}}
+	};
+	\draw[dashed,->] (yellow) -- (orange);
+	\draw[dashed,->] (yellow) -- (blue);
+\end{tikzpicture}
+\begin{flushleft}
+\textit{\color{yellow}Gelb} hat übernommen.
+\end{flushleft}
+\begin{tikzpicture}[level distance=14mm]
+  \node[rectangle,draw] {CAN-Raum}
+    child {node[circle,fill=yellow] {\color{yellow}Peer}
+    edge from parent node [left]{\textit{v}}}
+    child {node[rectangle,draw]  {Hälfte} 
+		child {node[rectangle,draw]  {Viertel} 
+			child {node[circle,fill=orange] {\color{orange}Peer} edge from parent node [left]{\textit{v}} }
+			child {node[circle,fill=blue] (blue){\color{blue}Peer} edge from parent node [right]{\textit{v}} }		edge from parent node [left]{\textit{h}}
+		}
+		child {node[circle,fill=green] (green){\color{green}Peer} edge from parent node [right]{\textit{h}}}
+		edge from parent node [right]{\textit{v}}
+	};
+		 \
+\end{tikzpicture}
+
+\begin{flushleft}Zur Defragmentierung steigt \textit{Gelb} zur Tiefensuche hinab. Anschließend ist der Baum um eine Ebene kürzer.
+\end{flushleft}
+\end{multicols}
+\caption{gibt die Aufteilung des CAN-Raumes analog als Baumdiagramm dar. Die Blätter sind die farbigen Peers, die Knoten spiegeln den Aufteilungsgrad wieder. Die Kanten sind mit \textit{v} vertikal bzw. \textit{h} horizontal beschriftet, was der Aufteilung der CAN-Fläche aus Aufgabenteil a) entspricht.} \label{fig:4}
+\end{figure}
+
+
+\section*{Aufgabe 17}
+
+\section*{Aufgabe 18}
+Bei einem „Worst-Case-Chord-Ring“, bei dem von Start A durch alle Peers D bis E geroutet werden muss, sind diese so verteilt, dass mit dem längsten verwendbaren Finger immer nur der direkte Nachbar getroffen wird. Alle anderen Finger müssen über das Ziel hinaus schießen. Gleichzeitig ist das Ziel maximal weit von A entfernt, d.\,h. es liegt im Zuständigkeitsbereich seines Vorgängers.
+
+Bei einem Ring mit $2^{4}=16$ Positionen ergibt sich dann für A : $0 \equiv 16\mod2^{4}$, B : 8, C : 12, D : 14, E : 15 mit Schlüssel $x=14 \in (14;15]$, was von E verwaltet wird.
+
+A routet mit seinem längsten Finger zu B, B kann nur seinen zweitlängsten zu C verwenden, da der längste wieder bei A landet, wo auch C mit seinem zweitlängsten ankommt, weswegen C den drittlängsten zu D nimmt. D kontaktiert seinen Nachfolger E, in dessen Zuständigkeitsbereich der Schlüssel liegt.
+\section*{Aufgabe 19}
+
+\section*{Aufgabe 20}
+
+\section*{Aufgabe 21}
+\end{document}
