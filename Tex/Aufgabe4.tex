@@ -79,7 +79,7 @@
 
  \begin{titlepage}
  \maketitle
-  Leider kann ich bei der morgigen Übung nicht anwesend sein, weswegen ich die Aufgaben schriftlich einreiche.
+  Leider kann ich bei der heutigen Übung nicht anwesend sein, weswegen ich die Aufgaben schriftlich einreiche.
  \end{titlepage}
 
 \section*{Aufgabe 15}
@@ -338,7 +338,7 @@ Bei einem „Worst-Case-Chord-Ring“, bei dem von Start A durch alle Peers D bi
 
 \begin{SCfigure}[\sidecaptionrelwidth][!hb]
 
-    \caption{Bei einem Ring mit $2^{4}=16$ Positionen ergibt sich dann für\mbox{$A : 0 \equiv 16\mod2^{4}$}, B : 8, C : 12, D : 14, E : 15 mit Schlüssel \mbox{$x=14 \in (14;15]$}, was von E verwaltet wird.}
+    \caption{Bei einem Ring mit $2^{4}=16$ Positionen ergibt sich dann für\mbox{$A : 0 \equiv 16\mod2^{4}$}, B : 8, C : 12, D : 14, E : 15 mit Schlüssel \mbox{$\textcolor{red}{x}=14 \in (14;15]$}, was von E verwaltet wird.}
 	\centering
 \begin{tikzpicture}
   % place nodes
@@ -347,7 +347,7 @@ Bei einem „Worst-Case-Chord-Ring“, bei dem von Start A durch alle Peers D bi
   \node (C) at (180:1.4) {C};
   \node (D) at (135:1.4) {D};
   \node (E) at (112.5:1.4) {E}; 
-  \node (X) at (126:1.5) {\color{red}\textit{x}};  
+  \node (X) at (126:1.5) {{\Large \color{red}\textit{x}}};  
   % connect nodes
   \path[thick, bend angle=75, bend left, ->]
     (A) edge (B);
@@ -388,7 +388,7 @@ Berechnung der Kanten des Graphen für die Visualisierung über Tikz über erfol
 \lstinputlisting[language=Python]{../Vorlesungsfolien/Aufgabe20.py}
 \begin{SCfigure}[\sidecaptionrelwidth][!hb]
 
-    \caption{Darstellung des Graphen mit \textcolor{green}{Linkskanten}, \textcolor{red}{ Rechtskanten}und \textcolor{blue}{Rückwärtskanten}.}
+    \caption{Darstellung des Graphen mit \textcolor{blue}{Linkskanten}, \textcolor{red}{ Rechtskanten}und \textcolor{green}{Rückwärtskanten}. Die Linkskante von A, B und C zeigen nach rechts und nicht über den linken Rand.}
 	\centering
   \begin{tikzpicture}[decoration=brace]
     % Die Grundlinie:
@@ -399,7 +399,7 @@ Berechnung der Kanten des Graphen für die Visualisierung über Tikz über erfol
      \foreach \x/\xtext in {0/0,10/1}
       \draw(\x,10pt)--(\x,-10pt) node[below] {\xtext};
 
-\draw[->, bend angle=45, bend right, blue] (1.00,0) to (0.50,0);
+\draw[->, bend angle=45, bend right, blue] (1.00,0) to (5.50,0);
 \draw[->, bend angle=60, bend right, red] (1.00,0) to (5.50,0);
 \draw[->, bend angle=30, bend right, green] (1.00,0) to (2.00,0);
 \draw[->, bend angle=45, bend right, blue] (3.00,0) to (1.50,0);
@@ -418,25 +418,20 @@ Berechnung der Kanten des Graphen für die Visualisierung über Tikz über erfol
 \draw[->, bend angle=60, bend right, red] (9.00,0) to (9.50,0);
 \draw[->, bend angle=30, bend right, green] (9.00,0) to (8.00,0);
 
-
-    % obere geschweifte Klammer mit Text darüber:
-    %\draw[decorate, yshift=2ex]  (0,0) -- node[above=0.4ex] {Text oberhalb}  (2,0);
-    % untere geschweifte Klammer mit Text darunter:
-    %\draw[decorate, yshift=-4ex] (2,0) -- node[below=0.4ex] {Text unterhalb} (0,0);
-    % z.B. untere geschweifte Klammer unter dem 3. Intervall:
-    %\draw[decorate, yshift=-4ex] (6,0) -- node[below=0.4ex] {3. Intervall} (4,0);
-    % Schleife für die kleinen Striche in Abstand, 10 pro Intervall
-    %\foreach \x in {0.2,0.4,...,2}  \draw (\x,0) -- (\x,-3pt);
-    % noch so ein paar Striche in weiterem Intervall:
-    %\foreach \x in {8.2,8.4,...,10} \draw (\x,0) -- (\x,-3pt);
   \end{tikzpicture}
 \end{SCfigure}
+
 \paragraph*{c)}
- Der Schlüssel an der Position 0,5 wird von D = 0,55 verwaltet. F benutzt seine \textcolor{green}{Linkskante}, um zu C zu gelangen. C erreicht D nicht direkt und benutzt seine \textcolor{blue}{Rückwärtskante} zu B, welches mit seiner \textcolor{red}{Rechtskante} D erreicht.
+ Der Schlüssel an der Position 0,5 wird von D = 0,55 verwaltet. F benutzt seine \textcolor{blue}{Linkskante}, um zu C zu gelangen. C erreicht D nicht direkt und benutzt seine \textcolor{green}{Rückwärtskante} zu B, welches mit seiner \textcolor{red}{Rechtskante} D erreicht.
 \begin{center}
 F \textcolor{green}{→} C \textcolor{blue}{→} B \textcolor{red}{→} D
 \end{center}
 
 \section*{Aufgabe 21}
+Um in einem Netzwerk garantieren zu können, dass zwei Peers in maximal h Schritten miteinander verbunden sind, muss ich entweder die Peers gut vernetzen, was aber bei vielen Peers überproportional viele neue Kanten beim Hinzufügen eines neuen Peers bedeutete, so dass die Bedingung, dass der Knotengrad in Θ(n) liegen soll, verletzt wird.
+
+Oder ich weiche die Idee des Peer-Gedankens auf und führe Knoten als Schaltstellen ein, womit ich die feste Schrittanzahl garantieren kann. Für $h=2$ könnte ein Knoten als Zentrale fungieren. Dieser hat zwar dann einen deutlich höheren Knotengrad, bei vielen Peers liegt der Mittelwert aller Knoten jedoch bei weniger als zwei und damit in Θ(n).
+
+Bei größerem \textit{h} ist dementsprechend eine mehrstufige Hierarchie möglich, so dass nicht mehr alle Knoten mit einem verbunden sein müssen.
 
 \end{document}
