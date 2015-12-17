@@ -75,6 +75,12 @@
 \usetikzlibrary{decorations.pathreplacing}
 \usepackage{color}
 
+%%% Operators min and max
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
 \begin{document}
 
  \begin{titlepage}
@@ -379,6 +385,14 @@ Ausfall des Peers D:
 	\item Der Ring ist wieder geschlossen.
 \end{compactitem}
 
+Es gibt zwei Szenarien.  Im ersten Szenario f"uhrt Peer E \verb!check predecessors! aus, bevor C \verb!stabilize! ausf"uhrt, im zweiten Szenario ist es umgekehrt.
+
+\begin{enumerate}
+
+\item Nehmen wir an, dass Peer E die Funktion \verb!check predecessors! ausf"uhrt und feststellt, dass Peer D nicht antwortet.  
+\item Zu einem sp"ateren Zeitpunkt f"uhrt Peer D \verb!stabilize! aus.  
+\end{enumerate}
+
 \section*{Aufgabe 20}
 \paragraph*{a)} Die Gleichmäßigkeit dieser Aufteilung ist
 $ρ:=\dfrac{max_i s_i}{min_j s_j} = \dfrac{0,2}{0,1} = 2$\quad.
@@ -426,6 +440,22 @@ Berechnung der Kanten des Graphen für die Visualisierung über Tikz über erfol
 \begin{center}
 F \textcolor{green}{→} C \textcolor{blue}{→} B \textcolor{red}{→} D
 \end{center}
+
+\begin{tabular}{ r | c }
+  Peer & Intervall \\
+  \hline
+  A & 0,2 \\
+  B & 0,2 \\
+  C & 0,15 \\
+  D & 0,1 \\
+  E & 0,15 \\
+  F & 0,2 \\
+\end{tabular}
+
+\begin{equation}
+  \rho = \frac{\argmax_i s_i}{\argmin_j s_j} = \frac{0,2}{0,1} = 2
+
+\end{equation}
 
 \section*{Aufgabe 21}
 Um in einem Netzwerk garantieren zu können, dass zwei Peers in maximal h Schritten miteinander verbunden sind, muss ich entweder die Peers gut vernetzen, was aber bei vielen Peers überproportional viele neue Kanten beim Hinzufügen eines neuen Peers bedeutete, so dass die Bedingung, dass der Knotengrad in Θ(n) liegen soll, verletzt wird.
