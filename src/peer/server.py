@@ -8,7 +8,7 @@ new_peer_signal = Signal(args=['peer'])
 
 class Server(object):
 
-    Server.BACKLOG = 0
+    BACKLOG = 0
 
     def __init__(self, dest_port=None):
         self.__socket = self.__create_server_socket(dest_port=dest_port)
