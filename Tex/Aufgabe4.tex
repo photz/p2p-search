@@ -8,7 +8,9 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
-\usepackage{multicol}
+\usepackage{float}	%	Bilder werden umflossen
+\usepackage[raggedright]{sidecap}	% Bildunterschrift seitlich
+\usepackage{multicol}	% Spaltenumgebung
 \usepackage{subscript} % \textsubscribt{} zum Tieferstellen außerhalb $ Modus
 \usepackage{hyperref}	% für links
 \usepackage{lmodern}
@@ -70,6 +72,7 @@
 }
 % Spezialpakete
 \usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing}
 \usepackage{color}
 
 %%% Operators min and max
@@ -82,11 +85,11 @@
 
  \begin{titlepage}
  \maketitle
-  Leider kann ich bei der morgigen Übung nicht anwesend sein, weswegen ich die Aufgaben schriftlich einreiche.
+  Leider kann ich bei der heutigen Übung nicht anwesend sein, weswegen ich die Aufgaben schriftlich einreiche.
  \end{titlepage}
 
 \section*{Aufgabe 15}
-a) \quad Das gesamte Quadrat gibt den CAN-Raum wieder, wobei die Zuständigkeitsbereiche der Peers durch einzelne Farben wiedergegeben werden. Der Peer \textit{Grün} verlässt das Overlay. Das entsprechende Nachbargebiet ist unter den Peers \textit{Blau} und \textit{Gelb} aufgeteilt, sodass es nicht direkt einem Nachbarn zugeschlagen werden kann. Die Defragmentierung ist jedoch einfach.\\
+\paragraph*{a)}Das gesamte Quadrat gibt den CAN-Raum wieder, wobei die Zuständigkeitsbereiche der Peers durch einzelne Farben wiedergegeben werden. Der Peer \textit{Grün} verlässt das Overlay. Das entsprechende Nachbargebiet ist unter den Peers \textit{Blau} und \textit{Gelb} aufgeteilt, sodass es nicht direkt einem Nachbarn zugeschlagen werden kann. Die Defragmentierung ist jedoch einfach.\\
 \begin{figure}[h]\centering
 \begin{multicols}{3}
 \textit{\color{green}Grün} verlässt das Overlay.\\\columnbreak
@@ -117,8 +120,8 @@ Nach der Defragmentierung:
 \caption{gibt die Aufteilung des CAN-Raumes vor dem Aussteigen des grünen Peers, nach dem Verlassen des Overlays mit Übernahme durch den blauen Peer sowie nach Defragmentierung.} \label{fig:1}
 \end{figure}
 
-b)\quad In der Baumdarstellung erkennt man, dass im Defragmentierungsschritt keine Tiefensuche notwendig ist:
-\begin{figure}[h!]\centering
+\paragraph*{b)}In der Baumdarstellung erkennt man, dass im Defragmentierungsschritt keine Tiefensuche notwendig ist:
+\begin{figure}[H]\centering
 \begin{multicols}{3}
 \begin{tikzpicture}[level distance=14mm]
   \node[rectangle,draw] {CAN-Raum}
@@ -173,7 +176,9 @@ Nach der Defragmentierung ist der Baum um eine Ebene kürzer.
 \caption{gibt die Aufteilung des CAN-Raumes analog als Baumdiagramm dar. Die Blätter sind die farbigen Peers, die Knoten spiegeln den Aufteilungsgrad wieder. Die Kanten sind mit \textit{v} vertikal bzw. \textit{h} horizontal beschriftet, was der Aufteilung der CAN-Fläche aus Aufgabenteil a) entspricht.} \label{fig:2}
 \end{figure}
 
-\noindent c)\quad Liste der Aktionen und Nachrichten zur Überführung des Overlays in einen konsistenten Zustand nach Verlassen des Peers \textit{Grün}:
+\newpage
+
+\paragraph*{c)}Liste der Aktionen und Nachrichten zur Überführung des Overlays in einen konsistenten Zustand nach Abmeldung des Peers \textit{Grün}:
 \begin{compactitem}[–]
 \item \textit{Blau} übernimmt den Zuständigkeitsraum mit Schlüsseln von \textit{Grün}
 \item \textit{Blau} verbindet sich mit den ehemaligen Nachbarn von \textit{Grün} und teilt seinen neuen Nachbarn mit, welches seine Nachbarn sind.
@@ -181,11 +186,11 @@ Nach der Defragmentierung ist der Baum um eine Ebene kürzer.
 \item \textit{Blau} sucht einen benachbarten Peer, der sein kleinstes Gebiet übernehmen kann. Es ist keine Tiefensuche notwendig.
 \item Da \textit{Gelb} ein Nachbar mit selben Verzweigungsgrad ist, kann \textit{Gelb} den Bereich von \textit{Blau} mit den Schlüsseln übernehmen.
 \item Die beiden Teilgebiete von \textit{Gelb} werden fusioniert, da sie den gleichen Verzweigungsgrad haben.
-\item \textit{Gelb} verbindet sich mit den ehemaligen Nachbarn von Blau des übernommenen Gebietes und teilt ihnen mit, welches seine Nachbarn sind.
+\item \textit{Gelb} verbindet sich mit den ehemaligen Nachbarn des von \textit{Blau} übernommenen Gebietes und teilt ihnen mit, welches seine Nachbarn sind.
 \end{compactitem}
 
 \section*{Aufgabe 16}
-		a) \quad Wieder gibt das gesamte Quadrat den CAN-Raum wieder, wobei die Zuständigkeitsbereiche der Peers durch einzelne Farben wiedergegeben werden. Der Peer \textit{Rot} verlässt das Overlay. Der benachbarte Peer mit dem kleinesten Zuständigkeitsbereich – hier also \textit{Gelb} – übernimmt von Rot. Allerdings kann Gelb sein kleineres Gebiet nicht sofort mit an einen benachbarten Peer zum Verschmelzen abgeben, da das entsprechende Gebiet weiter aufgeteilt ist.\\
+\paragraph*{a)}Wieder gibt das gesamte Quadrat den CAN-Raum wieder, wobei die Zuständigkeitsbereiche der Peers durch einzelne Farben wiedergegeben werden. Der Peer \textit{Rot} verlässt das Overlay. Der benachbarte Peer mit dem kleinesten Zuständigkeitsbereich – hier also \textit{Gelb} – übernimmt von Rot. Allerdings kann Gelb sein kleineres Gebiet nicht sofort mit an einen benachbarten Peer zum Verschmelzen abgeben, da das entsprechende Gebiet weiter aufgeteilt ist.\\
 \begin{figure}[h!]\centering
 \begin{multicols}{3}
 \textit{\color{red}Rot} verlässt das Overlay.\\\columnbreak
@@ -218,7 +223,7 @@ Nach der Defragmentierung:
 \caption{gibt die Aufteilung des CAN-Raumes vor dem Aussteigen des roten Peers, nach dem Verlassen des Overlays mit Übernahme durch den gelben Peer sowie nach Defragmentierung.} \label{fig:3}
 \end{figure}
 
-b)\quad In der Baumdarstellung erkennt man, dass jetzt im Defragmentierungsschritt eine Tiefensuche zum Finden von Partnern notwendig ist (s. Abbildung \ref{fig:4})
+\paragraph{b)}In der Baumdarstellung erkennt man, dass jetzt im Defragmentierungsschritt eine Tiefensuche zum Finden von Partnern notwendig ist (s. Abbildung \ref{fig:4})
 \begin{figure}[h!]\centering
 \begin{multicols}{3}
 \begin{tikzpicture}[level distance=14mm]
@@ -284,16 +289,101 @@ b)\quad In der Baumdarstellung erkennt man, dass jetzt im Defragmentierungsschri
 \caption{gibt die Aufteilung des CAN-Raumes analog als Baumdiagramm dar. Die Blätter sind die farbigen Peers, die Knoten spiegeln den Aufteilungsgrad wieder. Die Kanten sind mit \textit{v} vertikal bzw. \textit{h} horizontal beschriftet, was der Aufteilung der CAN-Fläche aus Aufgabenteil a) entspricht.} \label{fig:4}
 \end{figure}
 
+\paragraph*{c)} Liste der Aktionen und Nachrichten zur Überführung des Overlays in einen konsistenten Zustand nach Abmeldung des Peers \textit{Rot}:
+\begin{compactitem}[–]
+\item \textit{Gelb} übernimmt als Nachbar mit dem kleinsten Zuständigkeitsraum (lokales Optimum) den Raum mit Schlüsseln von \textit{Rot}
+\item \textit{Gelb} verbindet sich mit den ehemaligen Nachbarn von \textit{Rot} und teilt seinen neuen Nachbarn mit, welches seine Nachbarn sind.
+\item Bei einer periodischen Defragmentierung teilt \textit{Gelb} mit, dass es für zwei Räume zuständig ist \textit{ODER} \textit{Gelb} stößt aus diesem Grund eine Defragmentierung an.
+\item \textit{Gelb} sucht einen benachbarten Peer, der sein kleinstes Gebiet übernehmen kann. Da der zu \textit{Gelb} korrespondierende Raum weiter unterteilt ist, gibt \textit{Gelb} die Anfrage an \textit{Blau} und\textit{Orange} weiter: Tiefensuche.
+\begin{compactitem}
+	\item \textit{Blau} und\textit{Orange} haben den selben Verzweigungsgrad und einigen sich, wer die beiden zu verschmelzenden Räume übernimmt und wer den Raum von \textit{Gelb}.
+	\item \textit{Orange} verbindet sich mit den ehemaligen Nachbarn des von \textit{Blau} übernommenen Gebietes und teilt ihnen mit, welches seine Nachbarn sind.
+	\item \textit{Blau} verbindet sich mit den ehemaligen Nachbarn des von \textit{Gelb} übernommenen Gebietes und teilt ihnen mit, welches seine Nachbarn sind.
+\end{compactitem}
+\item Da \textit{Gelb} ein Nachbar mit selben Verzweigungsgrad ist, kann \textit{Gelb} den Bereich von \textit{Blau} mit den Schlüsseln übernehmen.
+\item Die beiden Teilgebiete von \textit{Gelb} werden fusioniert, da sie den gleichen Verzweigungsgrad haben.
+\item \textit{Gelb} verbindet sich mit den ehemaligen Nachbarn des von \textit{Blau} übernommenen Gebietes und teilt ihnen mit, welches seine Nachbarn sind.
+\end{compactitem}
+
+\newpage
 
 \section*{Aufgabe 17}
+\paragraph*{a)} Folgende Schlüssel werden von diesen Peers verwaltet:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{c|c|c|c|c|c|c}
+Schlüssel & $u=317$ & $v=99$ & $w=717$ & $x=910$ & $y=202$ & $z=950$ \\ 
+\hline 
+Peer & $D=440$ & $B=129$ & $H=730$ & $A=36$ & $C=312$ & $A=36$ \\ 
+\end{tabular} 
+\caption{Aus den Vorlesungsfolien ergibt sich, dass ein Schlüssel von dem Peer nächst größeren Nummer verwaltet wird: $x=p \in (p;succ(p+1)]$}
+\label{Schlüsseltabelle}
+\end{table}
+
+\paragraph*{b)} Die Fingertabelle von C = 312:
+\begin{table}[h]
+\centering
+\begin{tabular}{c|c|c|c|c|c|c}
+Finger № & 1 & 2 & 3   \\ 
+\hline 
+Peer & $J=910$ & $G=590$ & $D=440$   \\ 
+\end{tabular} 
+\caption{Als mögliche Finger ergeben sich aus $(C+2^{i})\mod m$ für $m=10$ und $i = 1,2,…,m$ folgende Positionen 313, 314, 316, 320, 328, 344, 376, 440, 568, 824, 312. Auf die tatsächlich vorhanden Peers angewendet ergibt sich dann die Fingertabelle von C.}
+\end{table}
+
+\paragraph*{c)} Routingweg von Peer C = 312 zu Schlüssel v = 99: Der Schlüssel v wird von B verwaltet\ref{Schlüsseltabelle}. C verwendet als erstes den längsten Finger 1 zu J. J kontaktiert den \textit{Predecessor} von B, also A, direkt, da A der \textit{Successor} von J ist.
+\begin{center}
+C → J → A → B
+\end{center}
 
 \section*{Aufgabe 18}
 Bei einem „Worst-Case-Chord-Ring“, bei dem von Start A durch alle Peers D bis E geroutet werden muss, sind diese so verteilt, dass mit dem längsten verwendbaren Finger immer nur der direkte Nachbar getroffen wird. Alle anderen Finger müssen über das Ziel hinaus schießen. Gleichzeitig ist das Ziel maximal weit von A entfernt, d.\,h. es liegt im Zuständigkeitsbereich seines Vorgängers.
 
-Bei einem Ring mit $2^{4}=16$ Positionen ergibt sich dann für A : $0 \equiv 16\mod2^{4}$, B : 8, C : 12, D : 14, E : 15 mit Schlüssel $x=14 \in (14;15]$, was von E verwaltet wird.
+
+
+\begin{SCfigure}[\sidecaptionrelwidth][!hb]
+
+    \caption{Bei einem Ring mit $2^{4}=16$ Positionen ergibt sich dann für\mbox{$A : 0 \equiv 16\mod2^{4}$}, B : 8, C : 12, D : 14, E : 15 mit Schlüssel \mbox{$\textcolor{red}{x}=14 \in (14;15]$}, was von E verwaltet wird.}
+	\centering
+\begin{tikzpicture}
+  % place nodes
+  \node (A) at ( 90:1.4) {A};
+  \node (B) at (-90:1.4) {B};
+  \node (C) at (180:1.4) {C};
+  \node (D) at (135:1.4) {D};
+  \node (E) at (112.5:1.4) {E}; 
+  \node (X) at (126:1.5) {{\Large \color{red}\textit{x}}};  
+  % connect nodes
+  \path[thick, bend angle=75, bend left, ->]
+    (A) edge (B);
+  \path[thick, bend angle=30, bend left, ->]
+    (B) edge (C);
+  \path[thick, bend angle=15, bend left, ->]
+    (C) edge (D);
+  \path[thick, <-]
+    (D) edge (E)
+    (A) edge (E) ;
+ 
+\end{tikzpicture}
+
+\label{fig:Ring}
+\end{SCfigure}
 
 A routet mit seinem längsten Finger zu B, B kann nur seinen zweitlängsten zu C verwenden, da der längste wieder bei A landet, wo auch C mit seinem zweitlängsten ankommt, weswegen C den drittlängsten zu D nimmt. D kontaktiert seinen Nachfolger E, in dessen Zuständigkeitsbereich der Schlüssel liegt.
-\section*{Aufgabe 19}
+\section*{Aufgabe 19} 
+Ausfall des Peers D:
+\begin{compactitem} [–]
+	\item E merkt durch \textit{Check-Predecessor}, dass D nicht mehr da ist, und setzt seinen Predecessor-Eintrag auf NULL.
+	\item C merkt, dass sein Successor D nicht mehr antwortet, und setzt seinen Successor-Link auf den nächsten Finger, der noch antwortet, hier also J.
+	\item Bei dem nächsten Abgleich mit J merkt C, dass zwischen ihm und J noch jemand sitzt, da successor(C) = J $\neq$ predecessor(J) = I, und ruft \textit{Stabilize} auf:
+	\begin{compactitem}
+		\item C setzt seinen Successor-Eintrag auf I.
+		\item Der o.\,g. Vorgang wiederholt sich, bis C bei E angelangt ist, das keinen Predecessor hat. 
+		\item E trägt als Predecessor C ein.
+	\end{compactitem}
+	\item Der Ring ist wieder geschlossen.
+\end{compactitem}
 
 
 \begin{enumerate}
@@ -303,6 +393,52 @@ A routet mit seinem längsten Finger zu B, B kann nur seinen zweitlängsten zu C
 \end{enumerate}
 
 \section*{Aufgabe 20}
+\paragraph*{a)} Die Gleichmäßigkeit dieser Aufteilung ist
+$ρ:=\dfrac{max_i s_i}{min_j s_j} = \dfrac{0,2}{0,1} = 2$\quad.
+
+\paragraph*{b)} 
+Berechnung der Kanten des Graphen für die Visualisierung über Tikz über erfolgt durch folgendes Skript:
+\lstinputlisting[language=Python]{../Vorlesungsfolien/Aufgabe20.py}
+\begin{SCfigure}[\sidecaptionrelwidth][!hb]
+
+    \caption{Darstellung des Graphen mit \textcolor{blue}{Linkskanten}, \textcolor{red}{ Rechtskanten}und \textcolor{green}{Rückwärtskanten}. Die Linkskante von A, B und C zeigen nach rechts und nicht über den linken Rand.}
+	\centering
+  \begin{tikzpicture}[decoration=brace]
+    % Die Grundlinie:
+    \draw(0,0)--(10,0);
+    % Striche und Beschriftung in Abständen 0, 2, 4, 6, ...
+    \foreach \x/\xtext in {1/A,3/B,4.5/C,5.5/D,7/E,9/F}
+      \draw(\x,5pt)--(\x,-5pt) node[below] {\xtext};
+     \foreach \x/\xtext in {0/0,10/1}
+      \draw(\x,10pt)--(\x,-10pt) node[below] {\xtext};
+
+\draw[->, bend angle=45, bend right, blue] (1.00,0) to (5.50,0);
+\draw[->, bend angle=60, bend right, red] (1.00,0) to (5.50,0);
+\draw[->, bend angle=30, bend right, green] (1.00,0) to (2.00,0);
+\draw[->, bend angle=45, bend right, blue] (3.00,0) to (1.50,0);
+\draw[->, bend angle=60, bend right, red] (3.00,0) to (6.50,0);
+\draw[->, bend angle=30, bend right, green] (3.00,0) to (6.00,0);
+\draw[->, bend angle=45, bend right, blue] (4.50,0) to (2.25,0);
+\draw[->, bend angle=60, bend right, red] (4.50,0) to (7.25,0);
+\draw[->, bend angle=30, bend right, green] (4.50,0) to (9.00,0);
+\draw[->, bend angle=45, bend right, blue] (5.50,0) to (2.75,0);
+\draw[->, bend angle=60, bend right, red] (5.50,0) to (7.75,0);
+\draw[->, bend angle=30, bend right, green] (5.50,0) to (1.00,0);
+\draw[->, bend angle=45, bend right, blue] (7.00,0) to (3.50,0);
+\draw[->, bend angle=60, bend right, red] (7.00,0) to (8.50,0);
+\draw[->, bend angle=30, bend right, green] (7.00,0) to (4.00,0);
+\draw[->, bend angle=45, bend right, blue] (9.00,0) to (4.50,0);
+\draw[->, bend angle=60, bend right, red] (9.00,0) to (9.50,0);
+\draw[->, bend angle=30, bend right, green] (9.00,0) to (8.00,0);
+
+  \end{tikzpicture}
+\end{SCfigure}
+
+\paragraph*{c)}
+ Der Schlüssel an der Position 0,5 wird von D = 0,55 verwaltet. F benutzt seine \textcolor{blue}{Linkskante}, um zu C zu gelangen. C erreicht D nicht direkt und benutzt seine \textcolor{green}{Rückwärtskante} zu B, welches mit seiner \textcolor{red}{Rechtskante} D erreicht.
+\begin{center}
+F \textcolor{green}{→} C \textcolor{blue}{→} B \textcolor{red}{→} D
+\end{center}
 
 \begin{tabular}{ r | c }
   Peer & Intervall \\
@@ -321,4 +457,10 @@ A routet mit seinem längsten Finger zu B, B kann nur seinen zweitlängsten zu C
 \end{equation}
 
 \section*{Aufgabe 21}
+Um in einem Netzwerk garantieren zu können, dass zwei Peers in maximal h Schritten miteinander verbunden sind, muss ich entweder die Peers gut vernetzen, was aber bei vielen Peers überproportional viele neue Kanten beim Hinzufügen eines neuen Peers bedeutete, so dass die Bedingung, dass der Knotengrad in Θ(n) liegen soll, verletzt wird.
+
+Oder ich weiche die Idee des Peer-Gedankens auf und führe Knoten als Schaltstellen ein, womit ich die feste Schrittanzahl garantieren kann. Für $h=2$ könnte ein Knoten als Zentrale fungieren. Dieser hat zwar dann einen deutlich höheren Knotengrad, bei vielen Peers liegt der Mittelwert aller Knoten jedoch bei weniger als zwei und damit in Θ(n).
+
+Bei größerem \textit{h} ist dementsprechend eine mehrstufige Hierarchie möglich, so dass nicht mehr alle Knoten mit einem verbunden sein müssen.
+
 \end{document}

@@ -1,0 +1,5 @@
+Verbindungsaufbau zum Netzwerk
+
+Verbindung schließen
+
+Errorhandling beim Verbindungsabbruch
