@@ -1,0 +1,12 @@
+Overlay:
+  neuer Peer soll alte Verbindung kappen
+  Grenzanzahl für Verbindungen wie hoch und was tun wenn erreicht
+  Was passiert, wenn ein peer ausfällt
+  Ausbalanzieren des overlays
+
+
+Diagnosetool:
+  Prozess killen
+  
+
+
