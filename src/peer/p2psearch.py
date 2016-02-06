@@ -3,7 +3,7 @@
 from random import choice, sample
 import logging, socket, argparse, datetime
 
-
+from httpproxy import HttpProxy
 from dispatcher import EventDispatcher
 import peer, server, config, message, diagnosis
 
@@ -53,7 +53,7 @@ class Master(object):
         self.__dispatcher = EventDispatcher()
         self.__server = server.Server(dest_port=dest_port)
         self.__messages = {}
-        
+
         config.dest_port = self.__server.get_port()
 
         self.__dispatcher.register(self.__server)
@@ -79,7 +79,9 @@ class Master(object):
 
             self.__dispatcher.register(d)
 
-
+        # set up the HTTP proxy server
+        self.__proxy = HttpProxy(2007)
+        self.__dispatcher.register(self.__proxy)
 
 
     def run(self):
