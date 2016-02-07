@@ -67,7 +67,7 @@ class Webinterface(object):
             logging.info('searching for ... %s' % search_query)
 
             requesthandler.send_response(200)
-            requesthandler.send_header('Content-type', 'Content-Type: text/js; charset=utf-8')
+            requesthandler.send_header('Content-type', 'Content-Type: application/json; charset=utf-8')
             requesthandler.end_headers()
 
             requesthandler.wfile.write('[{"title":"Example Document", "url": "http://example.com"}]'.encode('utf-8'))
