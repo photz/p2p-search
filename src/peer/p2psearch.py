@@ -5,7 +5,7 @@ import logging, socket, argparse, datetime
 
 from httpproxy import HttpProxy
 from dispatcher import EventDispatcher
-import peer, server, config, message, diagnosis
+import peer, server, config, message, diagnosis, webinterface, index
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -22,7 +22,7 @@ class IPPortPair(object):
 def get_args():
     arg_parser = argparse.ArgumentParser(description=u'',
                                          epilog=u"Example:\
-p2psearch --dest-port 6000 --peers 123.321.552.123:4000 849.345.543.344:61300")
+p2psearch --dest-port 6000 --proxy-port=3128 --peers 123.321.552.123:4000 849.345.543.344:61300")
 
     arg_parser.add_argument('--peers',
                             nargs='+',
@@ -40,6 +40,13 @@ p2psearch --dest-port 6000 --peers 123.321.552.123:4000 849.345.543.344:61300")
                             type=IPPortPair,
                             default=None)
 
+    arg_parser.add_argument('--proxy-port',
+                            help='the TCP port that will be used by the '\
+                            'HTTP proxy server',
+                            type=int,
+                            default=3128)
+                            
+
     return arg_parser.parse_args()
 
 class Master(object):
@@ -48,7 +55,8 @@ class Master(object):
     MAX_PEERS = 10
 
     def __init__(self, dest_port=None, known_peers=None,
-                 diagnosis_service=None):
+                 diagnosis_service=None,
+                 proxy_port=None):
         self._peers = set()
         self.__dispatcher = EventDispatcher()
         self.__server = server.Server(dest_port=dest_port)
@@ -79,8 +87,16 @@ class Master(object):
 
             self.__dispatcher.register(d)
 
+        # set up the index
+        self._index = index.Index()
+
+        # set up the webinterface
+        self._webinterface = webinterface.Webinterface(self._index)
+
         # set up the HTTP proxy server
-        self.__proxy = HttpProxy(2007)
+        self.__proxy = HttpProxy(proxy_port,
+                                 self._webinterface,
+                                 self._index)
         self.__dispatcher.register(self.__proxy)
 
 
@@ -292,7 +308,8 @@ def main():
 
     master = Master(dest_port=args.dest_port,
                     known_peers=known_peers,
-                    diagnosis_service=args.diagnosis)
+                    diagnosis_service=args.diagnosis,
+                    proxy_port=args.proxy_port)
 
     master.run()
 
