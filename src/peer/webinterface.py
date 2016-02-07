@@ -4,14 +4,21 @@ from urllib import request
 class UnknownRequest(Exception):
     pass
 
+
+
 class Webinterface(object):
 
     WEBINTERFACE = 'p2psearch.com'
     
+    WEBINTERFACE_FILE = './webinterface.html'
+
     def __init__(self, index):
 
         self._index = index
 
+        
+        self._webinterface_html = \
+    open(Webinterface.WEBINTERFACE_FILE, 'r').read().encode('utf-8')
 
     @staticmethod
     def _format_html_entry(doc):
@@ -19,7 +26,8 @@ class Webinterface(object):
 
     def _show_stats(self, path, requesthandler):
         requesthandler.send_response(200)
-        requesthandler.send_header('Content-type', 'Content-Type: text/html; charset=utf-8')
+        requesthandler.send_header('Content-type',
+                                   'Content-Type: text/html; charset=utf-8')
         requesthandler.end_headers()
 
         docs = map(Webinterface._format_html_entry,
@@ -41,16 +49,7 @@ class Webinterface(object):
         requesthandler.send_header('Content-type', 'Content-Type: text/html; charset=utf-8')
         requesthandler.end_headers()
 
-        requesthandler.wfile.write('<html><body><h1>P2P Search</h1>\
-        <div>\
-        <a href="/stats">Statistics</a>\
-        </div>\
-        <div>\
-        <input type="text">\
-        <button id="" value="Search">\
-        </div>\
-        <h2>Results</h2>\
-        </body></html>'.encode('utf-8'))
+        requesthandler.wfile.write(self._webinterface_html)
         requesthandler.wfile.close()
 
 
