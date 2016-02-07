@@ -13,4 +13,6 @@ clean:
 	rm *.py
 	rm *.py~
 
+test:
+	PYTHONPATH='peer:diagnosis' test/test.py
 
