@@ -43,13 +43,39 @@ class Webinterface(object):
 
         requesthandler.wfile.write('<html><body><h1>P2P Search</h1>\
         <div>\
-        <input type="text">\
-        <button type="submit">\
+        <a href="/stats">Statistics</a>\
         </div>\
-        <pre>hi</pre>\
+        <div>\
+        <input type="text">\
+        <button id="" value="Search">\
+        </div>\
+        <h2>Results</h2>\
         </body></html>'.encode('utf-8'))
         requesthandler.wfile.close()
 
+
+    def _handle_query(self, path, requesthandler):
+        _, _, _, query, _ = \
+                urllib.parse.urlsplit(requesthandler.path)
+
+        q = urllib.parse.parse_qs(query, strict_parsing=True)
+
+        if 'query' in q:
+
+            search_query = q['query'][0]
+
+            logging.info('searching for ... %s' % search_query)
+
+            requesthandler.send_response(200)
+            requesthandler.send_header('Content-type', 'Content-Type: text/js; charset=utf-8')
+            requesthandler.end_headers()
+
+            requesthandler.wfile.write('[{"title":"Example Document", "url": "http://example.com"}]'.encode('utf-8'))
+            requesthandler.wfile.close()
+
+        else:
+            logging.warning('got a malformed query from the browser')
+            
 
     def process_request(self, requesthandler):
         _, netloc, path, _, _ = \
@@ -61,7 +87,10 @@ class Webinterface(object):
 
             if path == '/stats':
                 self._show_stats(path, requesthandler)
+            elif path == '/query':
+                self._handle_query(path, requesthandler)
             else:
                 self._serve_webinterface(path, requesthandler)
+
         else:
             raise UnknownRequest()
