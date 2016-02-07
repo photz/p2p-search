@@ -6,7 +6,13 @@ class Index(object):
 
         self._terms = dict()
 
+        # for debugging purposes only FIXME remove
+        self.docs = list()
+
     def add(self, doc):
+        # for debugging purposes only FIXME
+        self.docs.append(doc)
+
         tokens = self._tokenize(doc.contents)
 
         for token in tokens:
@@ -36,6 +42,6 @@ class Index(object):
         
 
     def _tokenize(self, s):
-        return s.lower().split()
+        return list(set(s.lower().split()))
 
     
