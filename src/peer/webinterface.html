@@ -4,16 +4,9 @@
 <head>
 <meta charset="utf-8">
 <script>
-function MakeListEntry(element) {
-	var li = document.createElement("li");
-	ListEntry =  document.createTextNode(element);
-	li.appendChild(ListEntry);
-	return li;
-}
 
-function test() {
+function p2psearch() {
 
-	//xhttp.setRequestHeader("Content-type", "application/json");
 	var query_field = document.getElementById("query-field");
 	var QueryFieldValue = document.createTextNode(query_field.value);
 	var ResponseList = document.getElementById("ResponseList");
@@ -49,23 +42,20 @@ function test() {
 	}
 }
 
-
 function doItOnInterval() {
 	    doItOnInterval();
     setInterval("doItOnInterval()", 5000);
 }
 
-
 </script>
 </head>
-
 
 <html>
 <body>
 
 <h2>P2P-Search</h2>
 <input type="text" id="query-field">
-<button type="button" onclick="test()">Request</button>
+<button type="button" onclick="p2psearch()">Ask the network</button>
 
 <ul id="ResponseList"></ul>
 
