@@ -37,7 +37,7 @@ function p2psearch() {
 			}
 		};
 		xhttp.responseType = 'json';
-		xhttp.open("GET", "/query?query=" + query_field.value, true);
+		xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=false", true);
 		xhttp.send();
 	}
 }
