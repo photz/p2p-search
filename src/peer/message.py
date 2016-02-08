@@ -1,6 +1,7 @@
 from random import randint
 import logging, xdrlib, json, string
 from enum import Enum
+import document
 
 PayloadType = Enum('PayloadType', 'ping pong query queryhit hello accept')
 
@@ -12,6 +13,74 @@ class InvalidHeader(Exception):
 
 class InvalidPayload(Exception):
     pass
+
+class QueryHitPayload(object):
+
+    payload_type = PayloadType.queryhit
+
+    def __init__(self, docs):
+        self.docs = docs
+
+    @staticmethod
+    def parse(payload_source):
+        unpacker = xdrlib.Unpacker(payload_source)
+
+        docs = unpacker.unpack_array(
+            lambda: QueryHitPayload.__unpack_doc(unpacker))
+
+        query_hit_payload = QueryHitPayload(docs)
+
+        return query_hit_payload
+
+    @staticmethod
+    def __unpack_doc(unpacker):
+        title = unpacker.unpack_string().decode('utf-8')
+        url = unpacker.unpack_string().decode('utf-8')
+
+        doc = document.Document()
+        doc.title = title
+        doc.url = url
+
+        return doc
+        
+
+    @staticmethod
+    def __pack_doc(packer, doc):
+        packer.pack_string(doc.title.encode('utf-8'))
+        packer.pack_string(doc.url.encode('utf-8'))
+
+    def serialize(self):
+        packer = xdrlib.Packer()
+
+        packer.pack_array(self.docs,
+                          lambda doc: \
+                          QueryHitPayload.__pack_doc(
+                              packer, doc))
+
+        return packer.get_buffer()
+        
+
+
+class QueryPayload(object):
+
+    payload_type = PayloadType.query
+
+    def __init__(self, query):
+        self.query = query
+
+    @staticmethod
+    def parse(payload_source):
+        unpacker = xdrlib.Unpacker(payload_source)
+        query = unpacker.unpack_string().decode('utf-8')
+        query_payload = QueryPayload(query)
+        return query_payload
+
+    def serialize(self):
+        packer = xdrlib.Packer()
+        packer.pack_string(self.query.encode('utf-8'))
+        return packer.get_buffer()
+
+
 
 class AcceptPayload(object):
 
@@ -50,6 +119,8 @@ class HelloPayload(object):
         packer.pack_uint(self.dest_port)
 
         return packer.get_buffer()
+
+
 
 
 class PingPayload(object):
@@ -163,7 +234,9 @@ class Message(object):
         PayloadType.ping : PingPayload,
         PayloadType.pong : PongPayload,
         PayloadType.hello : HelloPayload,
-        PayloadType.accept : AcceptPayload
+        PayloadType.accept : AcceptPayload,
+        PayloadType.query : QueryPayload,
+        PayloadType.queryhit : QueryHitPayload
     }
 
     VALID_TTL_RANGE = range(1, 40)

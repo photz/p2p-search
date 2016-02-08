@@ -35,7 +35,9 @@ class HttpProxyRequestHandler(server.SimpleHTTPRequestHandler):
                 logging.info('indexing %s' % self.path)
                 
                 html = page.read()
-                new_doc = document.Document(html.decode('utf-8'))
+                new_doc = document.Document.from_html(
+                    html.decode('utf-8'), self.path)
+
                 self.server.index.add(new_doc)
 
                 self.send_response(200)

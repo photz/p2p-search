@@ -74,7 +74,8 @@ class Master(object):
         server.new_peer_signal.connect(self._new_peer_callback)
         peer.connection_to_peer_established_signal.connect(
             self._connection_to_peer_established_callback)
-
+        webinterface.user_poses_query_signal.connect(
+            self._user_poses_query_callback)
         
         if known_peers:
             self._connect_to_peers(known_peers)
@@ -118,6 +119,15 @@ class Master(object):
                 last_update = datetime.datetime.now()
 
                 
+
+    def _user_poses_query_callback(self, query, **kwargs):
+
+        new_query_msg = message.Message(
+            payload=message.QueryPayload(query))
+
+        self.__messages[new_query_msg.message_id] = new_query_msg
+
+        self._flood_message(new_query_msg)
 
     def _ip_port_pairs_initialized_peers(self):
         """ returns a list containing an (ip, port) tuple for every
@@ -205,7 +215,7 @@ class Master(object):
             self.__dispatcher.unregister(peer)
             self._peers.remove(peer)
 
-    def ping_handler(self, msg):
+    def _ping_handler(self, msg):
         if msg.message_id in self.__messages:
             logging.debug(('discarding ping with id %d because ' +
                           'we have seen it before') % msg.message_id)
@@ -243,7 +253,7 @@ class Master(object):
             peer.send_message(msg)
 
 
-    def pong_handler(self, msg):
+    def _pong_handler(self, msg):
         logging.info('got a pong')
 
         if msg.message_id not in self.__messages:
@@ -283,16 +293,87 @@ class Master(object):
             original_msg.sender.send_message(msg)
             
             
+    def _query_handler(self, msg):
+        if msg.message_id in self.__messages:
+            logging.debug('discarding query message because its id ' +
+                          'has been seen before')
+            return
+        
+
+        msg.inc_hops()
+
+        msg.dec_ttl()
+
+        if msg.ttl == 0:
+            logging.debug('discarding query because its TTL is now 0')
+            return
+
+        self.__messages[msg.message_id] = msg
+
+        # replicate the query message to other peers
+        self._flood_message(msg)
+
+        # check whether our local index contains any relevant documents
+        # for the query we received from our peer
+        results = self._index.query(msg.payload.query)
+
+        # if matching documents have been found, prepare a QueryHit
+        # message
+        if len(results) > 0:
+
+            new_queryhit = message.Message(
+                message_id=msg.message_id,
+                payload=message.QueryHitPayload(results))
+
+            msg.sender.send_message(new_queryhit)
+
+
+    def _queryhit_handler(self, msg):
+        logging.info('got a QueryHit')
+
+        if msg.message_id not in self.__messages:
+            logging.warning('we received a QueryHit message, but ' +
+                            'its message ID has never been seen before')
+
+            return
+
+        original_query = self.__messages[msg.message_id]
+
+        logging.debug('contents of the queryhit message')
+        for doc in msg.payload.docs:
+            logging.debug('TITLE: %s' % doc.title)
+                      
+
+
+        if original_query.sent_by_us():
+
+            # we make the results known to the webinterface
+            # so it can display them
+            self._webinterface.got_results(msg.payload.docs)
+
+        else:
+            # the QueryHit message we received was sent to us
+            # in response to a Query from another peer
+            # so we'll reverse-route to the peer we first got it from
+
+            logging.info('reverse-routing a QueryHit')
+
+            original_query.sender.send_message(msg)
 
     def new_message_callback(self, msg, **kwargs):
         logging.info('new incoming message: %s' % msg.payload.payload_type)
-            
 
         if msg.payload.payload_type is message.PayloadType.ping:
-            self.ping_handler(msg)
+            self._ping_handler(msg)
 
         elif msg.payload.payload_type is message.PayloadType.pong:
-            self.pong_handler(msg)
+            self._pong_handler(msg)
+
+        elif msg.payload.payload_type is message.PayloadType.query:
+            self._query_handler(msg)
+
+        elif msg.payload.payload_type is message.PayloadType.queryhit:
+            self._queryhit_handler(msg)
 
         else:
             logging.error('received an unknown message')
