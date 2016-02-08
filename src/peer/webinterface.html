@@ -33,12 +33,21 @@ function p2psearch() {
 					a.innerHTML = response[i].title;
 					li.appendChild(a)
 					ResponseList.appendChild(li);
+			//		console.log("Listeneintrag ergänzt");
 				}
 			}
 		};
 		xhttp.responseType = 'json';
 		xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=false", true);
 		xhttp.send();
+		
+		for (i = 1; i < 5; i++){
+			setTimeout(function() {
+				xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=true", true);
+				xhttp.send();
+			}, i*3000);
+	//		console.log(i);
+		}
 	}
 }
 
