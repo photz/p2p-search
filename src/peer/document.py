@@ -23,15 +23,26 @@ class MLStripper(HTMLParser):
 
 class Document(object):
 
-    def __init__(self, contents):
 
-        if type(contents) is not str:
+    @staticmethod
+    def from_html(html, url):
+        if type(html) is not str:
             raise TypeError('expected a string')
 
-        self.contents = MLStripper.strip_tags(contents)
-        self._extract_metadata(contents)
+        doc = Document()
 
+        doc.contents = MLStripper.strip_tags(html)
 
-    def _extract_metadata(self, html):
+        doc.extract_metadata(html)
+
+        doc.url = url
+
+        return doc
+        
+
+    def extract_metadata(self, html):
         bs = BeautifulSoup(html)
-        self.title = bs.title.text
+        if bs.title:
+            self.title = bs.title.text
+        else:
+            self.title = 'Unknown Document'
