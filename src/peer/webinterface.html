@@ -1,35 +1,74 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
+<meta charset="utf-8">
 <script>
+
 function p2psearch() {
-  var xhttp = new XMLHttpRequest();
-  var query_field = document.getElementById("query-field");
-  
-  xhttp.setRequestHeader("Content-type", "application/json");
-  
-  xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4 && xhttp.status == 200) {
-    	var response = JSON.parse(xhttp.response);
-      document.getElementById("response").innerHTML = xhttp.responseText;
-    }
-  };
-  xhttp.open("GET", query_field, true);
-  xhttp.send();
+
+	var query_field = document.getElementById("query-field");
+	var QueryFieldValue = document.createTextNode(query_field.value);
+	var ResponseList = document.getElementById("ResponseList");
+	var li = document.createElement("li");
+	var  a = document.createElement("a");
+		
+	if (query_field.value == ""){
+		ResponseList.innerHTML = "Your query is empty!";
+		}
+	else {
+		ResponseList.innerHTML = ("Results for ");
+		ResponseList.appendChild(QueryFieldValue);
+		var suffix = document.createTextNode(": ");
+		ResponseList.appendChild(suffix);
+		
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+				
+				response = xhttp.response;
+				console.log(response.length);
+				for (i = 0; i < response.length; i++) {
+					a.href = response[i].url;
+					a.innerHTML = response[i].title;
+					li.appendChild(a)
+					ResponseList.appendChild(li);
+			//		console.log("Listeneintrag ergänzt");
+				}
+			}
+		};
+		xhttp.responseType = 'json';
+		xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=false", true);
+		xhttp.send();
+		
+		for (i = 1; i < 5; i++){
+			setTimeout(function() {
+				xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=true", true);
+				xhttp.send();
+			}, i*3000);
+	//		console.log(i);
+		}
+	}
 }
+
+function doItOnInterval() {
+	    doItOnInterval();
+    setInterval("doItOnInterval()", 5000);
+}
+
 </script>
 </head>
 
-
-
+<html>
 <body>
 
 <h2>P2P-Search</h2>
 <input type="text" id="query-field">
-<button type="button" onclick="p2psearch()">Request</button>
+<button type="button" onclick="p2psearch()">Ask the network</button>
 
-<p id="response"></p>
- 
+<ul id="ResponseList"></ul>
+
+<h3 id="demo"></h3>
+
 </body>
 </html>
