@@ -232,7 +232,7 @@ class Gnutella(object):
             logging.info('received a pong in response to a ping ' +
                          'from us')
 
-            k = min(Master.MIN_PEERS, len(msg.payload.ip_port_pairs))
+            k = min(Gnutella.MIN_PEERS, len(msg.payload.ip_port_pairs))
 
             subset_ip_port_pairs = sample(msg.payload.ip_port_pairs,
                                           k)
