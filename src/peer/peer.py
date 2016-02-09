@@ -157,8 +157,9 @@ class Peer(object):
                 # so we'll do nothing and wait until this callback
                 # gets called again
                 return
-            except message.InvalidHeader:
-                logging.error('received a message with an invalid header')
+            except message.InvalidHeader as e:
+                logging.error('received a message with an invalid header: ' + e)
+                
             except message.InvalidPayload:
                 logging.error('received a message with an invalid payload')
             else:
