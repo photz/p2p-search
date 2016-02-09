@@ -4,7 +4,9 @@ all:
 	echo 'nothing'
 
 bundlehtml:
-	sed -e '/<javascript>/{r peer/webinterface.js' -e 'd}' > peer/webinterface_bundled.html < peer/webinterface2.html
+	sed -e '/<JAVASCRIPT>/{r peer/webinterface.js' -e 'd}' > tmp.html < peer/webinterface.html
+	sed -e '/<BOOTSTRAP>/{r peer/bootstrap.min.css' -e 'd}' > tmp2.html < tmp.html
+	sed -e '/<CUSTOM_CSS>/{r peer/webinterface.css' -e 'd}' > peer/webinterface_bundled.html < tmp2.html
 
 
 peer: bundlehtml
