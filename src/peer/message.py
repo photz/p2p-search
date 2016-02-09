@@ -241,7 +241,7 @@ class Message(object):
 
     VALID_TTL_RANGE = range(1, 40)
     VALID_HOPS_RANGE = range(0, 40)
-    VALID_PAYLOAD_LENGTH_RANGE = range(0, 100)
+    VALID_PAYLOAD_LENGTH_RANGE = range(0, 10000)
 
     DEFAULT_TTL = 2
 
@@ -313,7 +313,7 @@ class Message(object):
         payload_length = p.unpack_uint()
 
         if payload_length not in Message.VALID_PAYLOAD_LENGTH_RANGE:
-            raise InvalidHeader('invalid paylength length')
+            raise InvalidHeader('invalid payload length')
 
         if len(source) < header_length + payload_length:
             raise MessageTransferIncomplete()
