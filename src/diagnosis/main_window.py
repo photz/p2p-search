@@ -35,14 +35,14 @@ class ServletListWidgetItem(QtGui.QListWidgetItem):
 
         self.setText(str(self.__servlet))
 
-        MULT = 255
+        # MULT = 255
         
-        color = QtGui.QColor()
-        color.setHsv(MULT * self.__servlet.color['h'],
-                     MULT * self.__servlet.color['s'],
-                     MULT * self.__servlet.color['v'])
+        # color = QtGui.QColor()
+        # color.setHsv(MULT * self.__servlet.color['h'],
+        #              MULT * self.__servlet.color['s'],
+        #              MULT * self.__servlet.color['v'])
 
-        self.setBackground(color)
+        # self.setBackground(color)
 
 
 

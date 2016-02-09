@@ -37,38 +37,23 @@ function createNewListElement(title, url) {
 
 
 
-var P2PSearch = function(results_list_id) {
+var P2PSearch = function() {
 
 
-    var resultsList = document.getElementById(results_list_id);
 
-    if (resultsList === null) {
-	throw new Exception('could not find the results list');
-    }
-
-    var POLL_INTERVAL_S = 3;
+    var POLL_INTERVAL_MS = 1000;
     var POLL_MAX_TIMES = 5;
 
     var currentQuery = null;
     var timesPolled = 0;
 
+    var gotResultsCallback = null;
 
     //
     // private methods
     //
 
-    var displayResults = function(results) {
 
-	for (var i = 0; i < results.length; i++) {
-
-	    var new_entry = createNewListElement(
-		results[i].title,
-		results[i].url);
-
-	    resultsList.appendChild(new_entry);
-	}
-
-    };
 
     var pollResults = function(query, continued_query) {
 	var request = new XMLHttpRequest();
@@ -76,12 +61,18 @@ var P2PSearch = function(results_list_id) {
 	request.responseType = 'json';
 
 	request.onreadystatechange = function() {
-	    if (request.readyState == 4 && request.status == 200) {
+	    if (request.readyState == 4) {
 
-		displayResults(request.response);
+		if (request.status == 200) {
 
-		schedulePolling();
+		    gotResultsCallback(request.response);
 
+		    schedulePolling();
+		}
+		else {
+		    show_message('An error occurred.',
+				 'danger');
+		}
 	    }
 	}
 
@@ -106,10 +97,13 @@ var P2PSearch = function(results_list_id) {
 
 
 	}
+	else {
+	    currentQuery = null;
+	}
     };
 
     var schedulePolling = function() {
-	setTimeout(conditionallyPollMoreResults, POLL_INTERVAL_S);
+	setTimeout(conditionallyPollMoreResults, POLL_INTERVAL_MS);
     };
 
     //
@@ -118,17 +112,29 @@ var P2PSearch = function(results_list_id) {
 
     this.poseQuery = function(query) {
 
-	resultsList.innerHTML = '';
-
 	currentQuery = query;
 
 	pollResults(currentQuery, false);
 
     };
+
+    this.setGotResultsCallback = function(callback) {
+	if (typeof(callback) !== 'function') {
+	    throw new Exception('expected a function as callback');
+	}
+
+	gotResultsCallback = callback;
+    };
 };
 
-var SearchInterface = function(button_id, input_id) {
+var SearchInterface = function(button_id, input_id, results_list_id) {
     
+    var resultsList = document.getElementById(results_list_id);
+
+    if (resultsList === null) {
+	throw new Exception('could not find the results list');
+    }
+
     var button = document.getElementById(button_id);
 
     if (button === null) {
@@ -141,9 +147,13 @@ var SearchInterface = function(button_id, input_id) {
     	throw new Exception('could not find the input field');
     }
 
-    var p2psearch = new P2PSearch('ResponseList');
+
+
+
 
     var userPosesQueryCallback = function(event) {
+	resultsList.innerHTML = '';
+
 	if (input.value === '') {
 	    show_message('Please enter a query.', 'warning');
 	}
@@ -164,13 +174,31 @@ var SearchInterface = function(button_id, input_id) {
 	}
 	return true;
     });
+
+
+
+    var p2psearch = new P2PSearch('ResponseList');
+
+    p2psearch.setGotResultsCallback(function(results) {
+
+	for (var i = 0; i < results.length; i++) {
+
+	    var new_entry = createNewListElement(
+		results[i].title,
+		results[i].url);
+
+	    resultsList.appendChild(new_entry);
+	}
+
+    });
 };
 
 
 
 window.onload = function() {
     var searchinterface = new SearchInterface('search-button',
-					      'query-field');
+					      'query-field',
+					      'results-list');
 };
 
 
