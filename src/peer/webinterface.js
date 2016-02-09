@@ -35,69 +35,142 @@ function createNewListElement(title, url) {
     return div_node;
 }
 
-function p2psearch() {
 
-    var query_field = document.getElementById("query-field");
-    var ResponseList = document.getElementById("ResponseList");
-    
 
-    ResponseList.innerHTML = '';
+var P2PSearch = function(results_list_id) {
 
-    if (query_field.value == ""){
-	show_message('Please enter a search query', 'info');
+
+    var resultsList = document.getElementById(results_list_id);
+
+    if (resultsList === null) {
+	throw new Exception('could not find the results list');
     }
-    else {
-	show_message('Results for ' + query_field.value, 'info');
-	
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-	    if (xhttp.readyState == 4 && xhttp.status == 200) {
-		
-		response = xhttp.response;
-		console.log(response.length);
-		for (i = 0; i < response.length; i++) {
-		    var entry = createNewListElement(response[i].title,
-						     response[i].url);
+
+    var POLL_INTERVAL_S = 3;
+    var POLL_MAX_TIMES = 5;
+
+    var currentQuery = null;
+    var timesPolled = 0;
 
 
-		    ResponseList.appendChild(entry);
-		    //console.log("Listeneintrag ergänzt");
-		}
-	    }
-	};
-	xhttp.responseType = 'json';
-	xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=false", true);
-	xhttp.send();
-	
-	for (i = 1; i < 5; i++){
-	    setTimeout(function() {
-		xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=true", true);
-		xhttp.send();
-	    }, i*3000);
-	    //		console.log(i);
+    //
+    // private methods
+    //
+
+    var displayResults = function(results) {
+
+	for (var i = 0; i < results.length; i++) {
+
+	    var new_entry = createNewListElement(
+		results[i].title,
+		results[i].url);
+
+	    resultsList.appendChild(new_entry);
 	}
+
+    };
+
+    var pollResults = function(query, continued_query) {
+	var request = new XMLHttpRequest();
+
+	request.responseType = 'json';
+
+	request.onreadystatechange = function() {
+	    if (request.readyState == 4 && request.status == 200) {
+
+		displayResults(request.response);
+
+		schedulePolling();
+
+	    }
+	}
+
+	if (continued_query) {
+	    continued_query_str = 'true';
+	}
+	else {
+	    continued_query_str = 'false';
+	}
+
+	request.open("GET", "/query?query=" + query + "&continued_query=" + continued_query_str, true);
+
+	request.send();
+    };
+
+    var conditionallyPollMoreResults = function() {
+	if (currentQuery !== null && timesPolled < POLL_MAX_TIMES) {
+	    
+	    timesPolled++;
+
+	    pollResults(currentQuery, true);
+
+
+	}
+    };
+
+    var schedulePolling = function() {
+	setTimeout(conditionallyPollMoreResults, POLL_INTERVAL_S);
+    };
+
+    //
+    // public methods
+    //
+
+    this.poseQuery = function(query) {
+
+	resultsList.innerHTML = '';
+
+	currentQuery = query;
+
+	pollResults(currentQuery, false);
+
+    };
+};
+
+var SearchInterface = function(button_id, input_id) {
+    
+    var button = document.getElementById(button_id);
+
+    if (button === null) {
+    	throw new Exception('could not find the search button');
     }
-}
 
-function doItOnInterval() {
-    doItOnInterval();
-    setInterval("doItOnInterval()", 5000);
-}
+    var input = document.getElementById(input_id);
 
-window.onload = function() {
-    var query_field = document.getElementById('query-field');
+    if (input === null) {
+    	throw new Exception('could not find the input field');
+    }
 
-    var search_button = document.getElementById('search-button');
+    var p2psearch = new P2PSearch('ResponseList');
 
-    search_button.addEventListener('click', p2psearch);
+    var userPosesQueryCallback = function(event) {
+	if (input.value === '') {
+	    show_message('Please enter a query.', 'warning');
+	}
+	else {
+	    p2psearch.poseQuery(input.value);
+	    show_message('Searching for ' + input.value + '...');
+	}
+    };
 
-    query_field.addEventListener('keydown', function (event) {
+    button.addEventListener('click', function (event) {
+	userPosesQueryCallback();
+    });
+
+    input.addEventListener('keydown', function (event) {
 	if (event.which == 13 || event.keyCode == 13) {
-            p2psearch();
+	    userPosesQueryCallback();
 	    return true;
 	}
 	return true;
     });
+};
+
+
+
+window.onload = function() {
+    var searchinterface = new SearchInterface('search-button',
+					      'query-field');
 };
 
 
