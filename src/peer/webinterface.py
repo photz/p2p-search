@@ -11,7 +11,11 @@ class UnknownRequest(Exception):
 
 class Webinterface(object):
 
-    WEBINTERFACE = 'p2psearch.com'
+    WEBINTERFACE = [
+        'p2psearch.com',
+        'www.p2psearch.com',
+        'p2psearch'
+    ]
     
     WEBINTERFACE_FILE = './webinterface_bundled.html'
 
@@ -49,7 +53,7 @@ class Webinterface(object):
         </ul>\
         </div>\
         </body></html>' % ''.join(docs)).encode('utf-8'))
-        requesthandler.wfile.close()        
+        #requesthandler.wfile.close()        
     
 
     def _serve_webinterface(self, path, requesthandler):
@@ -58,7 +62,7 @@ class Webinterface(object):
         requesthandler.end_headers()
 
         requesthandler.wfile.write(self._webinterface_html)
-        requesthandler.wfile.close()
+        #requesthandler.wfile.close()
 
 
 
@@ -144,7 +148,7 @@ class Webinterface(object):
             Webinterface._encode_docs_for_transmission(docs))
 
 
-        requesthandler.wfile.close()
+        #requesthandler.wfile.close()
 
     @staticmethod
     def _encode_docs_for_transmission(docs):
@@ -164,7 +168,7 @@ class Webinterface(object):
         _, netloc, path, _, _ = \
                 urllib.parse.urlsplit(requesthandler.path)
 
-        if netloc == self.WEBINTERFACE:
+        if netloc in self.WEBINTERFACE:
 
             logging.info('path: %s' % path)
 
