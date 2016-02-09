@@ -13,7 +13,7 @@ class Webinterface(object):
 
     WEBINTERFACE = 'p2psearch.com'
     
-    WEBINTERFACE_FILE = './webinterface.html'
+    WEBINTERFACE_FILE = './webinterface_bundled.html'
 
     def __init__(self, index):
 
@@ -61,7 +61,6 @@ class Webinterface(object):
         self._cached_results.extend(results)
 
 
-
     def _handle_query(self, path, requesthandler):
         _, _, _, query, _ = \
                 urllib.parse.urlsplit(requesthandler.path)
@@ -79,19 +78,14 @@ class Webinterface(object):
 
         if 'query' in q:
 
-            results_arr = list()
-
             search_query = q['query'][0]
 
             if not continued_query:
 
-                results_docs = list(self._index.query(search_query))
+                matching_docs = self._index.query(search_query)
 
-                for doc in results_docs:
-                    results_arr.append({
-                        'title' : doc.title,
-                        'url' : doc.url
-                    })
+                Webinterface._transfer_matching_docs_to_client(
+                    matching_docs, requesthandler)
 
                 user_poses_query_signal.emit(query=search_query)
 
@@ -100,32 +94,41 @@ class Webinterface(object):
 
             else:
                 logging.debug('CONTINUED_QUERY=TRUE')
-                for doc in self._cached_results:
-                    results_arr.append({
-                        'title' : doc.title,
-                        'url' : doc.url
-                    })
+
+                Webinterface._transfer_matching_docs_to_client(
+                    self._cached_results, requesthandler)
 
                 self._cached_results.clear()
-                
-                    
-            logging.debug(results_arr)
-
-            logging.info('searching for ... %s' % search_query)
-
-            requesthandler.send_response(200)
-            requesthandler.send_header('Content-type',
-                                       'Content-Type: application/json; charset=utf-8')
-            requesthandler.end_headers()
-
-            requesthandler.wfile.write(
-                json.dumps(results_arr).encode('utf-8'))
-
-            requesthandler.wfile.close()
 
         else:
             logging.warning('got a malformed query from the browser')
             
+    @staticmethod
+    def _transfer_matching_docs_to_client(docs, requesthandler):
+        requesthandler.send_response(200)
+        requesthandler.send_header('Content-type',
+                                   'Content-Type: application/json; charset=utf-8')
+        requesthandler.end_headers()
+
+        requesthandler.wfile.write(
+            Webinterface._encode_docs_for_transmission(docs))
+
+
+        requesthandler.wfile.close()
+
+    @staticmethod
+    def _encode_docs_for_transmission(docs):
+        l = list()
+
+        for doc in docs:
+            l.append({
+                'title' : doc.title,
+                'url' : doc.url
+            })
+        
+        return json.dumps(l).encode('utf-8')
+
+
 
     def process_request(self, requesthandler):
         _, netloc, path, _, _ = \
@@ -143,4 +146,5 @@ class Webinterface(object):
                 self._serve_webinterface(path, requesthandler)
 
         else:
+            # no idea what to do with this request
             raise UnknownRequest()

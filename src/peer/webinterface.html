@@ -1,74 +1,44 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<script>
+  <head>
+    <meta charset="utf-8">
+    <title>P2PSearch</title>
+    <script type="text/javascript">
+      <JAVASCRIPT>
+    </script>
+    <style>
+      <BOOTSTRAP>
 
-function p2psearch() {
-
-	var query_field = document.getElementById("query-field");
-	var QueryFieldValue = document.createTextNode(query_field.value);
-	var ResponseList = document.getElementById("ResponseList");
-	var li = document.createElement("li");
-	var  a = document.createElement("a");
-		
-	if (query_field.value == ""){
-		ResponseList.innerHTML = "Your query is empty!";
-		}
-	else {
-		ResponseList.innerHTML = ("Results for ");
-		ResponseList.appendChild(QueryFieldValue);
-		var suffix = document.createTextNode(": ");
-		ResponseList.appendChild(suffix);
-		
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				
-				response = xhttp.response;
-				console.log(response.length);
-				for (i = 0; i < response.length; i++) {
-					a.href = response[i].url;
-					a.innerHTML = response[i].title;
-					li.appendChild(a)
-					ResponseList.appendChild(li);
-			//		console.log("Listeneintrag ergänzt");
-				}
-			}
-		};
-		xhttp.responseType = 'json';
-		xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=false", true);
-		xhttp.send();
-		
-		for (i = 1; i < 5; i++){
-			setTimeout(function() {
-				xhttp.open("GET", "/query?query=" + query_field.value + "&continued_query=true", true);
-				xhttp.send();
-			}, i*3000);
-	//		console.log(i);
-		}
-	}
-}
-
-function doItOnInterval() {
-	    doItOnInterval();
-    setInterval("doItOnInterval()", 5000);
-}
-
-</script>
-</head>
-
+	<CUSTOM_CSS>
+    </style>
+  </head>
 <html>
-<body>
+  <body>
+    <div class="container">
 
-<h2>P2P-Search</h2>
-<input type="text" id="query-field">
-<button type="button" onclick="p2psearch()">Ask the network</button>
+      <div class="header clearfix">
+	  <div class="form-inline pull-right">
+	    <div class="form-group">
+	      <label class="hidden" for="query-field">Query</label>
+	      <input id="query-field" type="text" class="form-control" placeholder="Query">
+	    </div>
+	    <button type="submit" id="search-button" class="btn btn-primary">Ask the network</button>
+	  </div>
 
-<ul id="ResponseList"></ul>
+        <h3 class="text-muted">P2PSearch</h3>
+      </div>
 
-<h3 id="demo"></h3>
+      <div id="alert-box" class="alert" role="alert">
+      </div>
 
-</body>
+      <div class="">
+	<div class="list-group" id="ResponseList">
+	  <!--<a href="#" class="list-group-item">
+	    <h4 class="list-group-item-heading">Example doc</h4>
+	    <p class="list-group-item-text">Hello there</p>
+	  </a>
+	</div>-->
+      </div>
+    </div>
+  </body>
 </html>

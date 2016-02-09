@@ -1,14 +1,9 @@
-function show_warning(warning_text) {
-    var warning_container = document.getElementById('search-warning');
-
-    warning_container.innerHTML = warning_text;
-}
 
 function show_message(message_text, message_type='info') {
 
     css_class = 'alert-' + message_type;
 
-    var message_container = document.getElementById('search-message');
+    var message_container = document.getElementById('alert-box');
 
     message_container.className = '';
 
@@ -43,18 +38,16 @@ function createNewListElement(title, url) {
 function p2psearch() {
 
     var query_field = document.getElementById("query-field");
-    var QueryFieldValue = document.createTextNode(query_field.value);
-    var statusDisplay = document.getElementById('status-display');
     var ResponseList = document.getElementById("ResponseList");
     
-    statusDisplay.innerHTML = '';
+
     ResponseList.innerHTML = '';
 
     if (query_field.value == ""){
 	show_message('Please enter a search query', 'info');
     }
     else {
-	show_message('Results for ' + QueryFieldValue, 'info');
+	show_message('Results for ' + query_field.value, 'info');
 	
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -91,3 +84,21 @@ function doItOnInterval() {
     setInterval("doItOnInterval()", 5000);
 }
 
+window.onload = function() {
+    var query_field = document.getElementById('query-field');
+
+    var search_button = document.getElementById('search-button');
+
+    search_button.addEventListener('click', p2psearch);
+
+    query_field.addEventListener('keydown', function (event) {
+	if (event.which == 13 || event.keyCode == 13) {
+            p2psearch();
+	    return true;
+	}
+	return true;
+    });
+};
+
+
+    
