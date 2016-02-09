@@ -1,4 +1,4 @@
-import logging, socket, json, datetime
+import logging, socket, json, datetime, random
 from signalslot.signal import Signal
 
 servlet_disconnected_signal = Signal(args=['disconnected_servlet'])
@@ -12,11 +12,19 @@ class Servlet(object):
 
         self.__socket = sock
         self.handle = sock.fileno()
+        self.pid = None
         self.__buffer = bytes()
         self.__peers = list()
         self.__alive = True
         self.__dest_port = None
         self.__created_at = datetime.datetime.now()
+
+        
+        self.color = {
+            'h' : random.random(),
+            's' : random.random(),
+            'v' : 1
+        }
 
     def get_created_at(self):
         return self.__created_at
@@ -73,6 +81,11 @@ class Servlet(object):
             else:
                 logging.warning('status update from peer was ' +
                                 'missing a list of peers')
+
+            if 'pid' in data:
+                self.pid = data['pid']
+            else:
+                logging.warning('status update from peer missing pid')
 
             if 'dest_port' in data:
                 self.__dest_port = data['dest_port']

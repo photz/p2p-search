@@ -34,20 +34,36 @@ class DiagnosisService(QtCore.QThread):
         self.__servlets.remove(disconnected_servlet)
         self.disconnected_servlet.emit(disconnected_servlet)
 
+    @staticmethod
+    def _get_servlet_style(servl):
+        s = '{node [color="%0.4f %0.4f %0.4f" style=filled] %d}' \
+            % (servl.color['h'],
+               servl.color['s'],
+               servl.color['v'],
+               servl.get_dest_port())
+
+        logging.debug('style: ' + s)
+
+        return s
+
     def export_to_dot(self):
 
         associations = list()
 
+        styles = map(self._get_servlet_style, self.__servlets)
+
         for crnt_servlet in self.__servlets:
 
             associations.extend(
-                map(lambda s: '%d -- %d' % (crnt_servlet.get_dest_port(),
+                map(lambda s: '%d -- %d [len=2.0]' % (crnt_servlet.get_dest_port(),
                                             s['port']), crnt_servlet.get_peers()))
 
         dot = '''strict graph mygraph { 
         node [shape = circle];
         %s
-        }''' % ";\n".join(associations)
+        %s
+        }''' \
+            % (";\n".join(styles), ";\n".join(associations))
 
         return dot
 

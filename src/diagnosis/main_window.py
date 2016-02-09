@@ -1,5 +1,4 @@
-import os
-import subprocess, sys, logging, servlet, random, time
+import subprocess, sys, logging, servlet, random, time, os, signal
 from diagnosis_service import DiagnosisService
 
 from PyQt4 import QtCore, QtGui
@@ -36,6 +35,17 @@ class ServletListWidgetItem(QtGui.QListWidgetItem):
 
         self.setText(str(self.__servlet))
 
+        MULT = 255
+        
+        color = QtGui.QColor()
+        color.setHsv(MULT * self.__servlet.color['h'],
+                     MULT * self.__servlet.color['s'],
+                     MULT * self.__servlet.color['v'])
+
+        self.setBackground(color)
+
+
+
     def get_servlet(self):
         return self.__servlet
 
@@ -43,8 +53,15 @@ class ServletListWidgetItem(QtGui.QListWidgetItem):
         return self.text() < other.text()
 
 
-def run_peer(dest_port=None, initial_peers=None, diagnosis=None):
+def run_peer(dest_port=None, initial_peers=None,
+             diagnosis=None, proxy_port=None):
     cmd = [PEER_PATH]
+
+    
+    if proxy_port is None:
+        proxy_port = random.randint(10000, 65000)
+
+    cmd.extend(['--proxy-port', str(proxy_port)])
 
     if dest_port:
         cmd.extend(['--dest-port', str(dest_port)])
@@ -151,6 +168,9 @@ class MainWindow(QtGui.QMainWindow):
         self.__detailsList.addItem('created at: %s'
                                    % crnt_servlet.get_created_at().strftime("%H:%M:%S %Z"))
 
+        self.__detailsList.addItem('pid: %d'
+                                   % crnt_servlet.pid)
+
         for crnt_peer in crnt_servlet.get_peers():
             self.__detailsList.addItem('%s:%d'
                                        % (crnt_peer['ip'], crnt_peer['port']))
@@ -180,9 +200,12 @@ class MainWindow(QtGui.QMainWindow):
             menu.addAction('Use as entry point for new peer',
                            lambda: self._new_servlet_with_given_entry_point(selected_servlet))
             menu.addAction('kill process',
-                           lambda: logging.debug('killing a process is not yet implemented'))
+                           lambda: self._kill_process_of_servlet(selected_servlet))
             ret = menu.exec_(self.__servlets_list.mapToGlobal(pos))
 
+
+    def _kill_process_of_servlet(self, servl):
+        os.kill(servl.pid, signal.SIGKILL)
 
 
     def __init_ui(self):

@@ -1,4 +1,5 @@
 import logging, socket, json, string, config
+from os import getpid
 
 class DiagnosisServiceUnreachable(Exception):
     pass
@@ -67,7 +68,8 @@ class StatusUpdate(object):
 
         return json.dumps({
             'peers' : self.__peers,
-            'dest_port' : self.__dest_port
+            'dest_port' : self.__dest_port,
+            'pid' : getpid()
         })
 
     @staticmethod
