@@ -50,7 +50,7 @@ Wenn man jetzt http://p2psearch.com in die Adresszeile eingibt,
 gelangt man zum Webinterface des dritten Peers.
 
 Gibt man jetzt etwa Woerter, die auf http://example.com vorkommen,
-in das Suchfeld ein, wird die Anfrage ueber das Overlay vorbreitet
+in das Suchfeld ein, wird die Anfrage ueber das Overlay verbreitet
 und eventuelle Ergebnisse angezeigt.
 
 Eine Anfrage wie etwa "without prior coordination" sollte
