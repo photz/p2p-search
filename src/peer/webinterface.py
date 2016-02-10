@@ -1,3 +1,5 @@
+import os
+
 from signalslot.signal import Signal
 import urllib, logging, json
 from urllib import request
@@ -29,8 +31,11 @@ class Webinterface(object):
         # this set will be used to filter duplicates
         self._previously_shown_urls = set()
         
+        web_html_path = os.path.join(os.path.dirname(__file__),
+                                Webinterface.WEBINTERFACE_FILE)
+
         self._webinterface_html = \
-    open(Webinterface.WEBINTERFACE_FILE, 'r').read().encode('utf-8')
+            open(web_html_path, 'r').read().encode('utf-8')
 
     @staticmethod
     def _format_html_entry(doc):
