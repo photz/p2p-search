@@ -15,7 +15,6 @@ function show_message(message_text, message_type='info') {
 
 
 
-
 var P2PSearch = function() {
 
 
@@ -249,14 +248,16 @@ var SearchInterface = function(button_id, input_id,
 
     p2psearch.setGotResultsCallback(function(results) {
 
-	for (var i = 0; i < results.length; i++) {
+	//tfor (var i = 0; i < results.length; i++) {
+
+	results.forEach(function(doc) {
 
 	    var new_entry = createListElement(
-		results[i].title,
-		results[i].url);
+		doc.title,
+		doc.url);
 
 	    resultsList.appendChild(new_entry);
-	}
+	});
 
     });
 
