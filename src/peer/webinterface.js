@@ -20,9 +20,9 @@ var P2PSearch = function() {
 
 
     // timeout for the requests in ms
-    var REQUEST_TIMEOUT_MS = 1000;
-    var POLL_INTERVAL_MS = 1000;
-    var POLL_MAX_TIMES = 10;
+    var REQUEST_TIMEOUT_MS = 300;
+    var POLL_INTERVAL_MS = 250;
+    var POLL_MAX_TIMES = 5;
 
     var currentQuery = null;
     var timesPolled = 0;
@@ -153,7 +153,8 @@ var P2PSearch = function() {
     };
 };
 
-var SearchInterface = function(button_id, input_id, results_list_id) {
+var SearchInterface = function(button_id, input_id,
+			       results_list_id, progress_bar_id) {
     
     var resultsList = document.getElementById(results_list_id);
 
@@ -171,6 +172,13 @@ var SearchInterface = function(button_id, input_id, results_list_id) {
 
     if (input === null) {
     	throw new Exception('could not find the input field');
+    }
+
+    var progressBar = document.getElementById(
+	progress_bar_id);
+
+    if (progressBar === null) {
+	throw new Exception('could not find the progress bar');
     }
 
 
@@ -253,8 +261,8 @@ var SearchInterface = function(button_id, input_id, results_list_id) {
     });
 
     p2psearch.setProgressChangedCallback(function(progress) {
-	var p = document.getElementById('search-progress-bar');
-	p.style.width = progress.toString() + '%';
+
+	progressBar.style.width = progress.toString() + '%';
     });
 };
 
@@ -263,7 +271,8 @@ var SearchInterface = function(button_id, input_id, results_list_id) {
 window.onload = function() {
     var searchinterface = new SearchInterface('search-button',
 					      'query-field',
-					      'results-list');
+					      'results-list',
+					      'search-progress-bar');
 };
 
 
