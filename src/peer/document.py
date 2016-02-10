@@ -25,24 +25,28 @@ class Document(object):
 
 
     @staticmethod
-    def from_html(html, url):
-        if type(html) is not str:
-            raise TypeError('expected a string')
+    def from_html(html_anything, url):
+
+        bs = BeautifulSoup(html_anything)
 
         doc = Document()
 
-        doc.contents = MLStripper.strip_tags(html)
+        doc.contents = MLStripper.strip_tags(str(bs))
 
-        doc.extract_metadata(html)
+        doc._extract_metadata(bs)
 
         doc.url = url
 
         return doc
         
 
-    def extract_metadata(self, html):
-        bs = BeautifulSoup(html)
+    def _extract_metadata(self, bs):
         if bs.title:
             self.title = bs.title.text
+        elif bs.h1:
+            self.title = bs.h1.text
+        elif bs.h2:
+            self.title = bs.h2.text
         else:
             self.title = 'Unknown Document'
+

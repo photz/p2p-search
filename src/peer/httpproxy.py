@@ -46,9 +46,10 @@ class HttpProxyRequestHandler(server.SimpleHTTPRequestHandler):
             if page.headers.get_content_type() == 'text/html':
                 logging.info('indexing %s' % self.path)
                 
-                html = page.read()
-                new_doc = document.Document.from_html(
-                    html.decode('utf-8'), self.path)
+                html_as_bytes = page.read()
+
+                new_doc = document.Document.from_html(html_as_bytes,
+                                                      self.path)
 
                 self.server.index.add(new_doc)
 
@@ -57,7 +58,7 @@ class HttpProxyRequestHandler(server.SimpleHTTPRequestHandler):
                                  'Content-Type: text/html; charset=utf-8')
                 self.end_headers()
 
-                self.wfile.write(html)
+                self.wfile.write(html_as_bytes)
                 #self.wfile.close()
 
 
