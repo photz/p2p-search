@@ -1,7 +1,7 @@
 from http import server
 import urllib, logging
 from urllib import request
-
+from urllib.request import URLError
 import document
 from webinterface import UnknownRequest
 
@@ -29,7 +29,19 @@ class HttpProxyRequestHandler(server.SimpleHTTPRequestHandler):
         try:
             self.server.webinterface.process_request(self)
         except UnknownRequest:
+            self._serve_remote()
+
+    def _serve_remote(self):
+
+        try:
             page = request.urlopen(self.path)
+
+        except URLError as urlerr:
+            self.send_response(404)
+            self.end_headers()
+            #self.wfile.close()
+            
+        else:
 
             if page.headers.get_content_type() == 'text/html':
                 logging.info('indexing %s' % self.path)
@@ -46,8 +58,9 @@ class HttpProxyRequestHandler(server.SimpleHTTPRequestHandler):
                 self.end_headers()
 
                 self.wfile.write(html)
-                self.wfile.close()
+                #self.wfile.close()
 
 
             else:
+                
                 self.copyfile(page, self.wfile)

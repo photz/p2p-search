@@ -11,7 +11,11 @@ class UnknownRequest(Exception):
 
 class Webinterface(object):
 
-    WEBINTERFACE = 'p2psearch.com'
+    WEBINTERFACE = [
+        'p2psearch.com',
+        'www.p2psearch.com',
+        'p2psearch'
+    ]
     
     WEBINTERFACE_FILE = './webinterface_bundled.html'
 
@@ -19,6 +23,11 @@ class Webinterface(object):
 
         self._index = index
         self._cached_results = list()
+
+        # a set in which we keep the URL's of documents
+        # the user has previously seen
+        # this set will be used to filter duplicates
+        self._previously_shown_urls = set()
         
         self._webinterface_html = \
     open(Webinterface.WEBINTERFACE_FILE, 'r').read().encode('utf-8')
@@ -44,7 +53,7 @@ class Webinterface(object):
         </ul>\
         </div>\
         </body></html>' % ''.join(docs)).encode('utf-8'))
-        requesthandler.wfile.close()        
+        #requesthandler.wfile.close()        
     
 
     def _serve_webinterface(self, path, requesthandler):
@@ -53,7 +62,7 @@ class Webinterface(object):
         requesthandler.end_headers()
 
         requesthandler.wfile.write(self._webinterface_html)
-        requesthandler.wfile.close()
+        #requesthandler.wfile.close()
 
 
 
@@ -80,7 +89,12 @@ class Webinterface(object):
 
             search_query = q['query'][0]
 
+            logging.debug('%d urls being filtered'
+                          % len(self._previously_shown_urls))
+
             if not continued_query:
+
+                self._previously_shown_urls.clear()
 
                 matching_docs = self._index.query(search_query)
 
@@ -89,20 +103,40 @@ class Webinterface(object):
 
                 user_poses_query_signal.emit(query=search_query)
 
+                self._update_duplicate_filter(matching_docs)
+
                 # clear the results cache
                 self._cached_results.clear()
 
             else:
-                logging.debug('CONTINUED_QUERY=TRUE')
+                logging.debug('received a continued query')
+
+                docs_to_be_transferred = \
+                    self._filter_previously_shown_documents(
+                        self._cached_results)
 
                 Webinterface._transfer_matching_docs_to_client(
-                    self._cached_results, requesthandler)
+                    docs_to_be_transferred, requesthandler)
+
+                self._update_duplicate_filter(docs_to_be_transferred)
 
                 self._cached_results.clear()
 
         else:
             logging.warning('got a malformed query from the browser')
             
+
+    def _update_duplicate_filter(self, docs):
+        self._previously_shown_urls.update(map(lambda doc: doc.url,
+                                               docs))
+
+
+
+    def _filter_previously_shown_documents(self, docs):
+        return filter(
+            lambda doc: doc.url not in self._previously_shown_urls,
+            docs)
+
     @staticmethod
     def _transfer_matching_docs_to_client(docs, requesthandler):
         requesthandler.send_response(200)
@@ -114,7 +148,7 @@ class Webinterface(object):
             Webinterface._encode_docs_for_transmission(docs))
 
 
-        requesthandler.wfile.close()
+        #requesthandler.wfile.close()
 
     @staticmethod
     def _encode_docs_for_transmission(docs):
@@ -134,7 +168,7 @@ class Webinterface(object):
         _, netloc, path, _, _ = \
                 urllib.parse.urlsplit(requesthandler.path)
 
-        if netloc == self.WEBINTERFACE:
+        if netloc in self.WEBINTERFACE:
 
             logging.info('path: %s' % path)
 
