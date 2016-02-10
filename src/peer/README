@@ -1,28 +1,28 @@
 == Installation
 
 
-Um das Programm auszufuehren wird Python 3 benoetigt.
+Um das Programm auszufuehren, wird Python 3 benoetigt.
 Zwei weitere Module sind erforderlich und koennen
 folgendermassen nachinstalliert werden:
 
 
-easy_install3 beautifulsoup4 
-easy_install3 signalslot
+    easy_install3 beautifulsoup4 
+    easy_install3 signalslot
 
 oder
 
-pip3 install signalslot
-pip3 install beautifulsoup4
+    pip3 install signalslot
+    pip3 install beautifulsoup4
 
 
-Da unser Programm Epoll braucht, geht es leider nicht mit OSX.
+Da unser Programm Epoll verwendet, funktioniert es nicht unter OSX.
 
 == Ausfuehren
 
 
 Ein Peer kann gestart werden durch:
 
-./p2psearch.py
+    ./p2psearch.py
 
 
 
@@ -30,17 +30,17 @@ Ein kleines Overlay mit drei Peers koennte auf
 folgende Weise aufgebaut werden.
 
 
-./p2psearch.py --dest-port 50000 --proxy-port 10000
+    ./p2psearch.py --dest-port 50000 --proxy-port 10000
 
-./p2psearch.py --peers localhost:50000 --dest-port 50001
+    ./p2psearch.py --peers localhost:50000 --dest-port 50001
 
-./p2psearch.py --peers localhost:50001 --proxy-port 10001
+    ./p2psearch.py --peers localhost:50001 --proxy-port 10001
 
 
 Ueber den HTTP-Proxy-Server des ersten Peers "besuchen"
 wir nun die Website example.com:
 
-printf "GET http://example.com\n\n" | netcat localhost 10000
+    printf "GET http://example.com\n\n" | netcat localhost 10000
 
 Als naechstes konfigurieren wir unseren Webbrowser
 (vorzugsweise Firefox) so, dass der HTTP-Proxy-Server
@@ -49,12 +49,14 @@ des dritten Peers benutzt wird (also auf localhost und Port 10001).
 Wenn man jetzt http://p2psearch.com in die Adresszeile eingibt,
 gelangt man zum Webinterface des dritten Peers.
 
-Gibt man jetzt etwa Woerter, die auf http://example.com vorkommen,
-in das Suchfeld ein, wird die Anfrage ueber das Overlay verbreitet
-und eventuelle Ergebnisse angezeigt.
+Sucht man ueber das Suchfeld nach  Woertern, die auf
+http://example.com vorkommen, wird die Anfrage ueber
+das Overlay verbreitet und eventuelle Ergebnisse
+erscheinen im Browser.
 
-Eine Anfrage wie etwa "without prior coordination" sollte
-jetzt example.com als Ergebnis liefern.
+Eine Anfrage wie etwa "without prior coordination"
+(ohne Anfuehrungszeichen) sollte jetzt example.com
+als Ergebnis liefern.
 
 Aufgrund mancher Schwachstellen in der Implementation des Proxy-Servers
 funktioniert dies leider nur bei einfachen statischen Websites

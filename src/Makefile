@@ -1,5 +1,3 @@
-ARCHIVE_NAME=p2p_berweiler_hotz.tar
-
 .PHONY: diagnosis test bundlehtml peer
 
 all:
@@ -11,8 +9,8 @@ bundlehtml:
 	sed -e '/<CUSTOM_CSS>/{r peer/webinterface.css' -e 'd}' > peer/webinterface_bundled.html < tmp2.html
 
 pack: bundlehtml
-	cd peer; tar -cf $ARCHIVE_NAME *.py webinterface_bundled.html README
-	cd peer; tar -tvf $ARCHIVE_NAME
+	cd peer; tar -cf ../p2p_berweiler_hotz.tar *.py webinterface_bundled.html README
+	tar -tvf p2p_berweiler_hotz.tar
 
 
 peer: bundlehtml
