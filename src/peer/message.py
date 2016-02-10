@@ -243,7 +243,7 @@ class Message(object):
     VALID_HOPS_RANGE = range(0, 40)
     VALID_PAYLOAD_LENGTH_RANGE = range(0, 10000)
 
-    DEFAULT_TTL = 2
+    DEFAULT_TTL = 3
 
 
     def __init__(self, message_id=None, ttl=None, hops=None, sender=None, payload=None):
