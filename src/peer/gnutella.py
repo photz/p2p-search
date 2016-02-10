@@ -300,7 +300,7 @@ class Gnutella(object):
 
         logging.debug('contents of the queryhit message')
         for doc in msg.payload.docs:
-            logging.debug('TITLE: %s' % doc.title)
+            logging.debug('title: %s' % doc.title)
                       
 
 

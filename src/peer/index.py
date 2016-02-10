@@ -9,6 +9,8 @@ class Index(object):
         # for debugging purposes only FIXME remove
         self.docs = list()
 
+        
+
     def _url_is_known(self, url):
         return url in map(lambda doc: doc.url, self.docs)
 

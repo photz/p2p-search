@@ -148,7 +148,7 @@ class Webinterface(object):
             Webinterface._encode_docs_for_transmission(docs))
 
 
-        #requesthandler.wfile.close()
+        #requesthandler.wfile.closeo()
 
     @staticmethod
     def _encode_docs_for_transmission(docs):
