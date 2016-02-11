@@ -30,5 +30,6 @@ clean:
 test:
 	PYTHONPATH='peer:diagnosis' python3 test/message_test.py
 	PYTHONPATH='peer:diagnosis' python3 test/index_test.py
+	PYTHONPATH='peer:diagnosis' python3 test/document_test.py
 
 
